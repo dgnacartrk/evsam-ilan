@@ -149,6 +149,9 @@ input:focus-visible,textarea:focus-visible,button:focus-visible{outline:3px soli
         <label>Fiyat (₺)
           <input type="text" id="price" inputmode="numeric" autocomplete="off">
         </label>
+        <label id="ratioWrap" hidden>Paylaşım oranı (isteğe bağlı)
+          <input type="text" id="ratio" placeholder="Örn. %50 - %50" autocomplete="off">
+        </label>
         <label>EİDS onaylı ilan linki
           <input type="text" id="eids" placeholder="https://shbd.io/s/..." autocomplete="off">
         </label>
@@ -178,7 +181,7 @@ const BG = '#E9E4DA', CARD = '#F6F2EA', PRICE = '#8A6424', BRONZE = '#B08D57', F
 
 const state = {
   type: 'SATILIK', fmt: 'post', extra: 0,
-  id: null, title: '', price: '', eids: '', yetki: '5500856',
+  id: null, title: '', price: '', ratio: '', eids: '', yetki: '5500856',
   photos: []
 };
 
@@ -303,7 +306,10 @@ function draw(){
   const metas = [];
   if (state.eids) metas.push(['EİDS ONAYLI İLAN', state.eids.replace(/^https?:\/\//, '')]);
   if (state.yetki) metas.push(['YETKİ BELGE NO', state.yetki]);
-  const showPrice = state.price && state.type !== 'KAT KARŞILIĞI';
+  const isKK = state.type === 'KAT KARŞILIĞI';
+  const leftVal = isKK ? (state.ratio || '').trim() : (state.price ? state.price + ' ₺' : '');
+  const leftLbl = isKK ? 'PAYLAŞIM ORANI' : state.type === 'KİRALIK' ? 'AYLIK KİRA' : 'SATIŞ FİYATI';
+  const showPrice = !!leftVal;
   const leftH = showPrice ? labelSize + 10 + priceSize : 0;
   const rightH = metas.length ? metas.length * pairH + (metas.length - 1) * 18 : 0;
   const rowH = Math.max(leftH, rightH);
@@ -320,14 +326,14 @@ function draw(){
 
   if (rowH){
     ctx.fillStyle = HAIR; ctx.fillRect(cx + pad, yy, iw, 2); yy += 2 + gap;
-    const colX = cx + pad + Math.round(iw * 0.52);
-    // vertical divider
-    ctx.fillStyle = HAIR; ctx.fillRect(colX - 28, yy, 2, rowH);
+    const colX = showPrice ? cx + pad + Math.round(iw * 0.52) : cx + pad;
+    // vertical divider (only when there is a left column)
+    if (showPrice){ ctx.fillStyle = HAIR; ctx.fillRect(colX - 28, yy, 2, rowH); }
     if (showPrice){
       ctx.font = '700 ' + labelSize + 'px Montserrat, sans-serif'; spaced(3); ctx.fillStyle = SOFT;
-      ctx.fillText(state.type === 'KİRALIK' ? 'AYLIK KİRA' : state.type === 'KAT KARŞILIĞI' ? 'FİYAT' : 'SATIŞ FİYATI', cx + pad, yy); spaced(0);
+      ctx.fillText(leftLbl, cx + pad, yy); spaced(0);
       ctx.font = '800 ' + priceSize + 'px Montserrat, sans-serif'; ctx.fillStyle = PRICE;
-      ctx.fillText(fit(state.price + ' ₺', colX - 56 - cx - pad), cx + pad, yy + labelSize + 10);
+      ctx.fillText(fit(leftVal, colX - 56 - cx - pad), cx + pad, yy + labelSize + 10);
     }
     let my = yy + (rowH - rightH) / 2;
     for (const [lbl, val] of metas){
@@ -388,7 +394,7 @@ function draw(){
 
 let t = null;
 function render(){
-  { const pl = $('price').closest('label'); if (pl) pl.hidden = state.type === 'KAT KARŞILIĞI'; }
+  { const kk = state.type === 'KAT KARŞILIĞI'; const pl = $('price').closest('label'); if (pl) pl.hidden = kk; $('ratioWrap').hidden = !kk; }
   clearTimeout(t);
   t = setTimeout(() => { draw(); $('preview').src = cv.toDataURL('image/jpeg', 0.85); refreshBlob(); }, 80);
   scheduleSave();
@@ -423,7 +429,7 @@ const store = (() => {
 let listings = [];
 let saveTimer = null, loading = false, confirmId = null;
 const newId = () => 'i' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
-const hasContent = () => !!(state.title.trim() || state.price || state.eids || state.photos.length);
+const hasContent = () => !!(state.title.trim() || state.price || state.ratio || state.eids || state.photos.length);
 
 function scheduleSave(){
   if (loading) return;
@@ -435,7 +441,7 @@ async function saveCurrent(){
   if (!state.id) state.id = newId();
   const rec = {
     id: state.id, type: state.type, fmt: state.fmt, extra: state.extra,
-    title: state.title, price: state.price, eids: state.eids,
+    title: state.title, price: state.price, ratio: state.ratio, eids: state.eids,
     photos: state.photos.map(p => p.blob), updatedAt: Date.now()
   };
   try {
@@ -450,7 +456,7 @@ async function saveCurrent(){
 }
 
 function resetFields(){
-  $('title').value = state.title; $('price').value = state.price; $('eids').value = state.eids;
+  $('title').value = state.title; $('price').value = state.price; $('ratio').value = state.ratio || ''; $('eids').value = state.eids;
   $('extra').value = state.extra ? state.extra : '';
   document.querySelectorAll('[data-type]').forEach(x => x.setAttribute('aria-pressed', String(x.dataset.type === state.type)));
   document.querySelectorAll('[data-fmt]').forEach(x => x.setAttribute('aria-pressed', String(x.dataset.fmt === state.fmt)));
@@ -460,7 +466,7 @@ function clearPhotos(){ state.photos.forEach(p => { try { URL.revokeObjectURL(p.
 async function newListing(){
   clearTimeout(saveTimer); if (hasContent()) await saveCurrent();
   clearPhotos();
-  Object.assign(state, { id: null, type: 'SATILIK', extra: 0, title: '', price: '', eids: '' });
+  Object.assign(state, { id: null, type: 'SATILIK', extra: 0, title: '', price: '', ratio: '', eids: '' });
   loading = true; resetFields(); renderThumbs(); render(); loading = false;
   $('saved').textContent = 'Yeni ilan';
   renderList();
@@ -471,7 +477,7 @@ async function newListing(){
 async function openListing(rec){
   clearTimeout(saveTimer); if (hasContent() && state.id !== rec.id) await saveCurrent();
   clearPhotos();
-  Object.assign(state, { id: rec.id, type: rec.type, fmt: rec.fmt || 'post', extra: rec.extra || 0, title: rec.title || '', price: rec.price || '', eids: rec.eids || '' });
+  Object.assign(state, { id: rec.id, type: rec.type, fmt: rec.fmt || 'post', extra: rec.extra || 0, title: rec.title || '', price: rec.price || '', ratio: rec.ratio || '', eids: rec.eids || '' });
   loading = true;
   for (const b of rec.photos || []){
     const src = URL.createObjectURL(b);
@@ -515,7 +521,7 @@ function renderList(){
     const tx = document.createElement('span'); tx.className = 'itext';
     const tt = document.createElement('span'); tt.className = 'ititle'; tt.textContent = rec.title.trim() || 'Başlıksız ilan';
     const meta = document.createElement('span'); meta.className = 'imeta';
-    meta.textContent = [rec.type === 'KİRALIK' ? 'Kiralık' : rec.type === 'KAT KARŞILIĞI' ? 'Kat karşılığı' : 'Satılık', rec.price ? rec.price + ' ₺' : '', fmtDate(rec.updatedAt)].filter(Boolean).join(' · ');
+    meta.textContent = [rec.type === 'KİRALIK' ? 'Kiralık' : rec.type === 'KAT KARŞILIĞI' ? 'Kat karşılığı' : 'Satılık', rec.type === 'KAT KARŞILIĞI' ? (rec.ratio || '') : (rec.price ? rec.price + ' ₺' : ''), fmtDate(rec.updatedAt)].filter(Boolean).join(' · ');
     tx.append(tt, meta);
     open.append(th, tx);
     if (rec.id === state.id){ const chip = document.createElement('span'); chip.className = 'chip'; chip.textContent = 'Açık'; open.appendChild(chip); }
@@ -602,6 +608,7 @@ bindSeg('type', 'type'); bindSeg('fmt', 'fmt');
 
 $('yetki').value = state.yetki;
 $('title').addEventListener('input', e => { state.title = e.target.value; render(); });
+$('ratio').addEventListener('input', e => { state.ratio = e.target.value; render(); });
 $('eids').addEventListener('input', e => { state.eids = e.target.value.trim(); render(); });
 $('yetki').addEventListener('input', e => { state.yetki = e.target.value.trim(); try { localStorage.setItem('evsam_yetki', state.yetki); } catch (err) {} render(); });
 $('extra').addEventListener('input', e => { state.extra = Math.max(0, Math.min(99, parseInt(e.target.value, 10) || 0)); render(); });
