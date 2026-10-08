@@ -89,6 +89,12 @@ input:focus-visible,textarea:focus-visible,button:focus-visible{outline:3px soli
 .mini.danger{background:#9B2C1F;border-color:#9B2C1F;color:#fff}
 .sheet{position:fixed;inset:0;z-index:50;background:rgba(20,18,16,.72);display:flex;align-items:flex-start;justify-content:center;overflow-y:auto;padding:calc(env(safe-area-inset-top,0px) + 16px) 16px calc(env(safe-area-inset-bottom,0px) + 16px)}
 .sheet[hidden]{display:none}
+#okSheet{align-items:center}
+.okbox{background:var(--surface);color:var(--ink);border-radius:20px;padding:26px 20px 20px;width:100%;max-width:340px;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center}
+.okicon{width:64px;height:64px;border-radius:50%;background:#1F9D55;color:#fff;display:flex;align-items:center;justify-content:center}
+.okbox h2{margin:0;font-size:20px;font-weight:800;color:#1F9D55}
+.okbox p{margin:0;color:var(--muted);font-size:14px;line-height:1.45}
+.okbtn{background:#1F9D55;color:#fff;margin-top:6px}
 .sheetbox{background:var(--surface);color:var(--ink);border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:12px;width:100%;max-width:520px}
 .sheetbox h2{margin:0;font-size:16px;font-weight:800}
 .sheetbox img{width:100%;border-radius:12px;display:block;-webkit-touch-callout:default;user-select:auto}
@@ -115,12 +121,12 @@ input:focus-visible,textarea:focus-visible,button:focus-visible{outline:3px soli
       <h2 id="ilanH">İlanlarım <span id="count"></span></h2>
       <button class="btn small" id="newBtn" type="button">+ Yeni ilan</button>
     </div>
-    <p class="hint" id="emptyList">Hazırladığınız ilanlar burada listelenir. Başlamak için "+ Yeni ilan"a dokunun.</p>
+    <p class="hint" id="emptyList">Hazırladığınız ilanlar burada listelenir. Yeni ilan için "+ Yeni ilan"a dokunun ya da aşağıdan başlayın.</p>
     <ul class="list" id="list"></ul>
     <span class="hint">İlanlar otomatik kaydedilir ve bu telefonda saklanır. <b id="saved"></b></span>
   </section>
 
-  <div class="grid" id="editor" hidden>
+  <div class="grid" id="editor">
     <div class="previewcol">
       <img id="preview" class="preview" alt="İlan görseli önizlemesi">
       <button class="btn" id="dl" type="button">
@@ -178,6 +184,15 @@ input:focus-visible,textarea:focus-visible,button:focus-visible{outline:3px soli
         <span class="hint">Gönderi: Facebook ve Instagram akışı. Durum: WhatsApp durumu ve Instagram hikâyesi.</span>
       </section>
     </div>
+  </div>
+</div>
+
+<div class="sheet" id="okSheet" hidden role="dialog" aria-modal="true" aria-labelledby="okH">
+  <div class="okbox">
+    <div class="okicon"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></div>
+    <h2 id="okH">Kaydedildi</h2>
+    <p id="okMsg">İlan kaydedildi ve görsel indirildi.</p>
+    <button class="btn okbtn" id="okBtn" type="button">Tamam</button>
   </div>
 </div>
 
@@ -484,15 +499,20 @@ async function newListing(){
   requestAnimationFrame(() => $('photosSec').scrollIntoView({ behavior: 'smooth', block: 'start' }));
 }
 
-function openEditor(){ $('editor').hidden = false; }
+function openEditor(){}
+function showSaved(msg){
+  return new Promise(res => {
+    $('okMsg').textContent = msg; $('okSheet').hidden = false; $('okBtn').focus({ preventScroll: true });
+    $('okBtn').onclick = () => { $('okSheet').hidden = true; res(); };
+  });
+}
 async function closeEditor(){
   clearTimeout(saveTimer); if (hasContent()) await saveCurrent();
   clearPhotos();
   Object.assign(state, { id: null, type: 'SATILIK', extra: 0, title: '', price: '', ratio: '', eids: '' });
   loading = true; resetFields(); renderThumbs(); render(); loading = false;
-  $('editor').hidden = true;
   renderList();
-  requestAnimationFrame(() => $('listSec').scrollIntoView({ behavior: 'smooth', block: 'start' }));
+  requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: 'smooth' }));
 }
 
 async function openListing(rec){
@@ -665,16 +685,18 @@ $('dl').addEventListener('click', async () => {
   if (mobile && navigator.canShare && navigator.canShare({ files: [file] })){
     try {
       await navigator.share({ files: [file] });
+      await showSaved('İlan kaydedildi, görsel hazır.');
       await closeEditor();
-      $('saved').textContent = 'İlan kaydedildi, görsel hazır';
+      $('saved').textContent = 'Kaydedildi';
       return;
     } catch (e) {
       if (e && e.name === 'AbortError'){ status(''); return; }
     }
   }
   saveViaLink(blob);
+  await showSaved('İlan kaydedildi ve görsel indirildi.');
   await closeEditor();
-  $('saved').textContent = 'İlan kaydedildi, görsel indirildi';
+  $('saved').textContent = 'Kaydedildi';
 });
 
 /* ---------- boot ---------- */
