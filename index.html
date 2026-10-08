@@ -303,7 +303,8 @@ function draw(){
   const metas = [];
   if (state.eids) metas.push(['EİDS ONAYLI İLAN', state.eids.replace(/^https?:\/\//, '')]);
   if (state.yetki) metas.push(['YETKİ BELGE NO', state.yetki]);
-  const leftH = state.price ? labelSize + 10 + priceSize : 0;
+  const showPrice = state.price && state.type !== 'KAT KARŞILIĞI';
+  const leftH = showPrice ? labelSize + 10 + priceSize : 0;
   const rightH = metas.length ? metas.length * pairH + (metas.length - 1) * 18 : 0;
   const rowH = Math.max(leftH, rightH);
   const gap = Math.round(24 * S);
@@ -322,7 +323,7 @@ function draw(){
     const colX = cx + pad + Math.round(iw * 0.52);
     // vertical divider
     ctx.fillStyle = HAIR; ctx.fillRect(colX - 28, yy, 2, rowH);
-    if (state.price){
+    if (showPrice){
       ctx.font = '700 ' + labelSize + 'px Montserrat, sans-serif'; spaced(3); ctx.fillStyle = SOFT;
       ctx.fillText(state.type === 'KİRALIK' ? 'AYLIK KİRA' : state.type === 'KAT KARŞILIĞI' ? 'FİYAT' : 'SATIŞ FİYATI', cx + pad, yy); spaced(0);
       ctx.font = '800 ' + priceSize + 'px Montserrat, sans-serif'; ctx.fillStyle = PRICE;
@@ -387,6 +388,7 @@ function draw(){
 
 let t = null;
 function render(){
+  { const pl = $('price').closest('label'); if (pl) pl.hidden = state.type === 'KAT KARŞILIĞI'; }
   clearTimeout(t);
   t = setTimeout(() => { draw(); $('preview').src = cv.toDataURL('image/jpeg', 0.85); refreshBlob(); }, 80);
   scheduleSave();
