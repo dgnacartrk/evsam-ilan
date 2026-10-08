@@ -149,8 +149,8 @@ input:focus-visible,textarea:focus-visible,button:focus-visible{outline:3px soli
         <label>Fiyat (₺)
           <input type="text" id="price" inputmode="numeric" autocomplete="off">
         </label>
-        <label id="ratioWrap" hidden>Paylaşım oranı (isteğe bağlı)
-          <input type="text" id="ratio" placeholder="Örn. %50 - %50" autocomplete="off">
+        <label id="ratioWrap" hidden>Arsa sahibi payı (isteğe bağlı)
+          <input type="text" id="ratio" placeholder="Örn. %40" autocomplete="off">
         </label>
         <label>EİDS onaylı ilan linki
           <input type="text" id="eids" placeholder="https://shbd.io/s/..." autocomplete="off">
@@ -308,7 +308,7 @@ function draw(){
   if (state.yetki) metas.push(['YETKİ BELGE NO', state.yetki]);
   const isKK = state.type === 'KAT KARŞILIĞI';
   const leftVal = isKK ? (state.ratio || '').trim() : (state.price ? state.price + ' ₺' : '');
-  const leftLbl = isKK ? 'PAYLAŞIM ORANI' : state.type === 'KİRALIK' ? 'AYLIK KİRA' : 'SATIŞ FİYATI';
+  const leftLbl = isKK ? 'ARSA SAHİBİ' : state.type === 'KİRALIK' ? 'AYLIK KİRA' : 'SATIŞ FİYATI';
   const showPrice = !!leftVal;
   const leftH = showPrice ? labelSize + 10 + priceSize : 0;
   const rightH = metas.length ? metas.length * pairH + (metas.length - 1) * 18 : 0;
