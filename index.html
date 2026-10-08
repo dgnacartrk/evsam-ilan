@@ -45,6 +45,7 @@ h1{font-size:clamp(22px,4vw,30px);font-weight:800;letter-spacing:-.5px;margin:0;
 .sub{color:var(--muted);margin:4px 0 0;max-width:60ch}
 .grid{display:grid;grid-template-columns:1fr;gap:20px}
 @media (min-width:900px){.grid{grid-template-columns:minmax(0,1fr) minmax(0,440px)}.previewcol{order:2;position:sticky;top:calc(env(safe-area-inset-top,0px) + 16px);align-self:start}}
+#editor{scroll-margin-top:12px}#photosSec,#listSec{scroll-margin-top:calc(env(safe-area-inset-top,0px) + 12px)}
 .panel{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:14px;min-width:0}
 .panel h2{margin:0;font-size:14px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase}
 .previewcol{display:flex;flex-direction:column;gap:12px;min-width:0}
@@ -109,29 +110,28 @@ input:focus-visible,textarea:focus-visible,button:focus-visible{outline:3px soli
     </div>
   </header>
 
-  <section class="panel" aria-labelledby="ilanH">
+  <section class="panel" id="listSec" aria-labelledby="ilanH">
     <div class="phead">
       <h2 id="ilanH">İlanlarım <span id="count"></span></h2>
       <button class="btn small" id="newBtn" type="button">+ Yeni ilan</button>
     </div>
-    <p class="hint" id="emptyList">Hazırladığınız ilanlar burada listelenir. İstediğiniz zaman açıp düzenleyebilirsiniz.</p>
+    <p class="hint" id="emptyList">Hazırladığınız ilanlar burada listelenir. Başlamak için "+ Yeni ilan"a dokunun.</p>
     <ul class="list" id="list"></ul>
     <span class="hint">İlanlar otomatik kaydedilir ve bu telefonda saklanır. <b id="saved"></b></span>
   </section>
 
-  <div class="grid">
+  <div class="grid" id="editor" hidden>
     <div class="previewcol">
       <img id="preview" class="preview" alt="İlan görseli önizlemesi">
       <button class="btn" id="dl" type="button">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v12M6 11l6 6 6-6M5 20h14"></path></svg>
-        Görseli indir
+        Kaydet ve görseli indir
       </button>
       <p class="status" id="status" role="status"></p>
-      <button class="btn ghost" id="newBtn2" type="button">+ Yeni ilan başlat</button>
     </div>
 
     <div style="display:flex;flex-direction:column;gap:16px;min-width:0">
-      <section class="panel">
+      <section class="panel" id="photosSec">
         <h2>Fotoğraflar</h2>
         <div class="thumbs" id="thumbs"></div>
         <label class="btn ghost" for="files" style="flex-direction:row;color:var(--ink);font-size:15px;font-weight:800">
@@ -479,8 +479,20 @@ async function newListing(){
   loading = true; resetFields(); renderThumbs(); render(); loading = false;
   $('saved').textContent = 'Yeni ilan';
   renderList();
-  $('title').focus({ preventScroll: true });
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  $('status').textContent = '';
+  openEditor();
+  requestAnimationFrame(() => $('photosSec').scrollIntoView({ behavior: 'smooth', block: 'start' }));
+}
+
+function openEditor(){ $('editor').hidden = false; }
+async function closeEditor(){
+  clearTimeout(saveTimer); if (hasContent()) await saveCurrent();
+  clearPhotos();
+  Object.assign(state, { id: null, type: 'SATILIK', extra: 0, title: '', price: '', ratio: '', eids: '' });
+  loading = true; resetFields(); renderThumbs(); render(); loading = false;
+  $('editor').hidden = true;
+  renderList();
+  requestAnimationFrame(() => $('listSec').scrollIntoView({ behavior: 'smooth', block: 'start' }));
 }
 
 async function openListing(rec){
@@ -495,14 +507,15 @@ async function openListing(rec){
   resetFields(); renderThumbs(); render(); loading = false;
   $('saved').textContent = 'Kayıtlı ilan açıldı';
   renderList();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  openEditor();
+  requestAnimationFrame(() => $('editor').scrollIntoView({ behavior: 'smooth', block: 'start' }));
 }
 
 async function removeListing(id){
   try { await store.del(id); } catch (e) {}
   listings = listings.filter(x => x.id !== id);
   confirmId = null;
-  if (state.id === id){ state.id = null; await newListing(); }
+  if (state.id === id){ state.id = null; clearPhotos(); state.title = state.price = state.ratio = state.eids = ''; await closeEditor(); }
   renderList();
 }
 
@@ -627,7 +640,6 @@ $('price').addEventListener('input', e => {
   e.target.value = f; state.price = f; render();
 });
 $('newBtn').addEventListener('click', newListing);
-$('newBtn2').addEventListener('click', newListing);
 
 /* ---------- download ---------- */
 function status(msg){ $('status').textContent = msg; }
@@ -642,9 +654,9 @@ function saveViaLink(blob){
   const url = URL.createObjectURL(blob), a = document.createElement('a');
   a.href = url; a.download = fileName(); document.body.appendChild(a); a.click(); a.remove();
   setTimeout(() => URL.revokeObjectURL(url), 5000);
-  status('Görsel indirildi.');
 }
 $('dl').addEventListener('click', async () => {
+  clearTimeout(saveTimer); if (hasContent()) await saveCurrent();
   let blob = latestBlob;
   if (!blob){ draw(); blob = await new Promise(r => cv.toBlob(r, 'image/jpeg', 0.92)); }
   if (!blob){ status('Görsel oluşturulamadı. Tekrar deneyin.'); return; }
@@ -653,13 +665,16 @@ $('dl').addEventListener('click', async () => {
   if (mobile && navigator.canShare && navigator.canShare({ files: [file] })){
     try {
       await navigator.share({ files: [file] });
-      status('Görsel hazır. Açılan menüden "Görüntüyü Kaydet"i seçtiyseniz Fotoğraflar\'da.');
+      await closeEditor();
+      $('saved').textContent = 'İlan kaydedildi, görsel hazır';
       return;
     } catch (e) {
       if (e && e.name === 'AbortError'){ status(''); return; }
     }
   }
   saveViaLink(blob);
+  await closeEditor();
+  $('saved').textContent = 'İlan kaydedildi, görsel indirildi';
 });
 
 /* ---------- boot ---------- */
