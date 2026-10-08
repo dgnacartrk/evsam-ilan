@@ -17,6 +17,13 @@ body{margin:0}
 img{max-width:100%}
 [hidden]{display:none!important}
 
+/* pull-to-refresh (home-screen app only) */
+#ptr{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 8px);z-index:50;width:40px;height:40px;margin-left:-20px;border-radius:50%;background:var(--gold-fill);color:var(--on-gold);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(0,0,0,.18);transform:translateY(-70px);opacity:0;pointer-events:none}
+#ptr svg{transition:transform .15s}
+#ptr.ready svg{transform:rotate(180deg)}
+#ptr.spin svg{animation:ptrspin .8s linear infinite}
+@keyframes ptrspin{to{transform:rotate(360deg)}}
+
 /* Layout: phone-first stack (preview, then the form); two columns from 900px with the preview pinned. */
 :root{
   --bg:#F1F1EF; --surface:#FFFFFF; --ink:#141416; --muted:#64646C; --line:#E2E0DB;
@@ -89,6 +96,8 @@ input:focus-visible,textarea:focus-visible,button:focus-visible{outline:3px soli
 </style>
 </head>
 <body>
+<div id="ptr" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6"></path></svg></div>
+
 
 
 <div class="wrap">
@@ -660,6 +669,34 @@ $('dl').addEventListener('click', async () => {
   listings = await store.all();
   renderList(); renderThumbs();
   draw(); $('preview').src = cv.toDataURL('image/jpeg', 0.85); refreshBlob();
+  let reopen = null; try { reopen = sessionStorage.getItem('evsam_reopen'); sessionStorage.removeItem('evsam_reopen'); } catch (e) {}
+  const r = reopen && listings.find(x => x.id === reopen); if (r) await openListing(r);
+})();
+
+/* ---------- pull to refresh (home-screen app has none of its own) ---------- */
+(() => {
+  const standalone = window.navigator.standalone === true || (window.matchMedia && matchMedia('(display-mode: standalone)').matches);
+  if (!standalone) return;
+  const el = $('ptr'), TH = 80;
+  let y0 = null, d = 0, busy = false;
+  const show = v => { el.style.opacity = String(Math.min(1, v / TH)); el.style.transform = 'translateY(' + (Math.min(v, TH + 30) - 60) + 'px)'; el.classList.toggle('ready', v >= TH); };
+  window.addEventListener('touchstart', e => {
+    if (busy || e.touches.length !== 1 || window.scrollY > 0) { y0 = null; return; }
+    if (e.target.closest('textarea, input, select, .sheet')) { y0 = null; return; }
+    y0 = e.touches[0].clientY; d = 0;
+  }, { passive: true });
+  window.addEventListener('touchmove', e => {
+    if (y0 === null) return;
+    if (window.scrollY > 0) { y0 = null; show(0); return; }
+    d = Math.max(0, (e.touches[0].clientY - y0) * 0.55); show(d);
+  }, { passive: true });
+  window.addEventListener('touchend', async () => {
+    if (y0 === null) return; y0 = null;
+    if (d < TH) { el.style.transition = 'transform .2s, opacity .2s'; show(0); setTimeout(() => el.style.transition = '', 220); return; }
+    busy = true; el.classList.remove('ready'); el.classList.add('spin');
+    try { clearTimeout(saveTimer); if (hasContent()) await saveCurrent(); if (state.id) sessionStorage.setItem('evsam_reopen', state.id); } catch (e) {}
+    location.replace(location.pathname + '?r=' + Date.now());
+  });
 })();
 resetFields(); renderThumbs(); renderList();
 </script>
