@@ -1,0 +1,819 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>EVSAM İlan Videosu</title>
+<meta name="theme-color" content="#E9E4DA">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="EVSAM Video">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&display=swap">
+<style>
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0}
+img{max-width:100%}
+[hidden]{display:none!important}
+
+/* Same look as the EVSAM İlan Görseli tool: phone-first stack, preview pinned on the right from 900px. */
+:root{
+  --bg:#F1F1EF; --surface:#FFFFFF; --ink:#141416; --muted:#64646C; --line:#E2E0DB;
+  --gold:#9C6E16; --gold-fill:#E2AE3B; --on-gold:#141416; --field:#FAFAF8; --stage:#2B2825;
+  --font:'Montserrat', 'Helvetica Neue', Helvetica, sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#111113; --surface:#1B1B1F; --ink:#F2F2EF; --muted:#A3A3AB; --line:#2C2C32;
+  --gold:#E2AE3B; --gold-fill:#E2AE3B; --on-gold:#141416; --field:#151518; --stage:#000000; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#111113; --surface:#1B1B1F; --ink:#F2F2EF; --muted:#A3A3AB; --line:#2C2C32;
+  --gold:#E2AE3B; --gold-fill:#E2AE3B; --on-gold:#141416; --field:#151518; --stage:#000000; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:15px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 48px}
+.wrap{max-width:1120px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+header{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap}
+h1{font-size:clamp(22px,4vw,30px);font-weight:800;letter-spacing:-.5px;margin:0;text-wrap:balance}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:2px;color:var(--gold);text-transform:uppercase}
+.sub{color:var(--muted);margin:4px 0 0;max-width:60ch}
+.toplink{font-weight:700;font-size:14px;color:var(--gold);text-decoration:none;border:1.5px solid var(--line);border-radius:12px;padding:10px 14px;min-height:44px;display:inline-flex;align-items:center}
+.grid{display:grid;grid-template-columns:1fr;gap:20px}
+@media (min-width:900px){.grid{grid-template-columns:minmax(0,1fr) minmax(0,400px)}.previewcol{order:2;position:sticky;top:calc(env(safe-area-inset-top,0px) + 16px);align-self:start}}
+.formcol{display:flex;flex-direction:column;gap:20px;min-width:0}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.panel h2{margin:0;font-size:14px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase}
+.previewcol{display:flex;flex-direction:column;gap:12px;min-width:0}
+.stage{background:var(--stage);border-radius:18px;padding:14px;display:flex;justify-content:center}
+.preview{display:block;height:min(62vh,640px);max-width:100%;aspect-ratio:9/16;border-radius:10px;background:#2B2825;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.preview.post{aspect-ratio:4/5;height:auto;width:100%}
+.seg{display:flex;flex-wrap:wrap;background:var(--field);border:1px solid var(--line);border-radius:12px;padding:4px;gap:4px}
+.seg button{flex:1 1 auto;border:0;background:transparent;color:var(--muted);font:700 14px var(--font);padding:10px 10px;border-radius:9px;cursor:pointer;min-height:44px}
+.seg button[aria-pressed="true"]{background:var(--gold-fill);color:var(--on-gold)}
+.field{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:700;color:var(--muted)}
+input[type=text],select{font:600 16px var(--font);color:var(--ink);background:var(--field);border:1px solid var(--line);border-radius:12px;padding:12px 14px;width:100%;min-height:46px}
+select{padding:10px 10px;font-size:14px}
+input:focus-visible,select:focus-visible,button:focus-visible,a:focus-visible{outline:3px solid var(--gold-fill);outline-offset:2px}
+.row2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.row3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:460px){.row3{grid-template-columns:repeat(2,minmax(0,1fr))}.row3 .wide{grid-column:1/-1}}
+.hint{font-size:12px;font-weight:500;color:var(--muted);margin:0}
+.btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;border:0;border-radius:14px;background:var(--gold-fill);color:var(--on-gold);font:800 16px var(--font);padding:15px 18px;min-height:52px;cursor:pointer;text-decoration:none}
+.btn.ghost{background:transparent;color:var(--ink);border:1.5px dashed var(--line)}
+.btn.line{background:var(--surface);color:var(--ink);border:1.5px solid var(--line)}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+.btns{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:10px}
+.status{font-size:13px;font-weight:600;color:var(--muted);min-height:1.2em;margin:0}
+.bar{height:6px;border-radius:6px;background:var(--line);overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--gold-fill)}
+.meta{display:flex;justify-content:space-between;gap:8px;font-size:12px;font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips button{border:1px solid var(--line);background:var(--field);color:var(--ink);font:700 13px var(--font);border-radius:999px;padding:8px 12px;min-height:38px;cursor:pointer}
+.plist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.prow{display:grid;grid-template-columns:72px minmax(0,1fr) auto;gap:10px;align-items:center;border:1px solid var(--line);border-radius:14px;background:var(--field);padding:8px}
+.pthumb{position:relative;width:72px;height:72px;border-radius:10px;overflow:hidden;background:var(--line)}
+.pthumb img{width:100%;height:100%;object-fit:cover;display:block}
+.pthumb b{position:absolute;left:4px;top:4px;background:rgba(14,14,16,.8);color:#fff;font:800 11px var(--font);padding:2px 6px;border-radius:6px}
+.pmid{display:flex;flex-direction:column;gap:6px;min-width:0}
+.pmid input{min-height:40px;padding:8px 10px;font-size:15px}
+.pmid .two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:6px}
+.pmid select{min-height:38px;padding:6px 8px;font-size:13px}
+.pacts{display:flex;flex-direction:column;gap:4px}
+.ico{width:36px;height:34px;border-radius:9px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:800 15px/1 var(--font);cursor:pointer}
+.ico.del{color:#B3261E}
+.empty{border:1.5px dashed var(--line);border-radius:14px;padding:18px;text-align:center;color:var(--muted);font-weight:600;font-size:14px}
+.sheet{position:fixed;inset:0;z-index:50;background:rgba(20,18,16,.78);display:flex;align-items:flex-start;justify-content:center;overflow-y:auto;
+  padding:calc(env(safe-area-inset-top,0px) + 16px) max(16px,env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 16px) max(16px,env(safe-area-inset-left,0px))}
+.sheetbox{background:var(--surface);color:var(--ink);border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:12px;width:100%;max-width:440px}
+.sheetbox h2{margin:0;font-size:18px;font-weight:800}
+.sheetbox video{width:100%;max-height:60vh;border-radius:12px;background:#000;display:block}
+.note{background:var(--field);border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:13px;font-weight:600;color:var(--muted);margin:0}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+@media (prefers-reduced-motion:no-preference){.btn{transition:transform .12s}.btn:active{transform:scale(.98)}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <div class="eyebrow">EVSAM Gayrimenkul</div>
+      <h1>İlan Videosu Hazırla</h1>
+      <p class="sub">İlan fotoğraflarını yükleyin, bilgileri yazın. Kamera hareketli, müzikli, EVSAM logolu Reels videosu telefonunuzda oluşur. Ücretsizdir, fotoğraflar hiçbir yere gönderilmez.</p>
+    </div>
+    <a class="toplink" href="./">İlan görseli aracı</a>
+  </header>
+
+  <div class="grid">
+    <div class="previewcol">
+      <div class="stage"><canvas id="cv" class="preview" width="1080" height="1920" aria-label="Video önizlemesi"></canvas></div>
+      <div class="meta"><span id="tInfo">0 fotoğraf</span><span id="tClock">0:00 / 0:00</span></div>
+      <div class="bar" aria-hidden="true"><i id="bar"></i></div>
+      <div class="btns">
+        <button class="btn line" id="playBtn" type="button">Önizle</button>
+        <button class="btn" id="makeBtn" type="button">Videoyu oluştur</button>
+      </div>
+      <p class="status" id="status" role="status"></p>
+    </div>
+
+    <div class="formcol">
+      <section class="panel" aria-labelledby="phH">
+        <h2 id="phH">1 · Fotoğraflar</h2>
+        <label class="btn ghost" for="fileIn">+ Fotoğraf ekle</label>
+        <input class="vh" id="fileIn" type="file" accept="image/*" multiple>
+        <ul class="plist" id="plist"></ul>
+        <p class="empty" id="pEmpty">En iyi sonuç için 6–12 fotoğraf seçin. İlk fotoğraf videonun açılışı olur.</p>
+        <p class="hint">Her fotoğrafa oda adı yazabilir (Salon, Mutfak…) ve kamera hareketini seçebilirsiniz. "Otomatik" yatay fotoğrafları yana kaydırarak odanın tamamını gösterir.</p>
+      </section>
+
+      <section class="panel" aria-labelledby="inH">
+        <h2 id="inH">2 · İlan bilgileri</h2>
+        <div class="seg" id="typeSeg" role="group" aria-label="İlan türü">
+          <button type="button" data-v="SATILIK">Satılık</button>
+          <button type="button" data-v="KİRALIK">Kiralık</button>
+          <button type="button" data-v="KAT KARŞILIĞI">Kat karşılığı</button>
+        </div>
+        <label class="field">Başlık<input type="text" id="title" placeholder="Deniz manzaralı, site içinde 3+1 daire"></label>
+        <div class="row2">
+          <label class="field">Konum<input type="text" id="loc" list="locs" placeholder="Atakum, Mimarsinan Mah."></label>
+          <label class="field" id="priceLbl"><span id="priceTxt">Fiyat (₺)</span><input type="text" id="price" inputmode="numeric" placeholder="4.250.000"></label>
+        </div>
+        <datalist id="locs"><option value="Atakum"><option value="İlkadım"><option value="Canik"><option value="Atakum, Mimarsinan Mah."><option value="Atakum, Körfez Mah."><option value="İlkadım, Kale Mah."></datalist>
+        <div class="row3">
+          <label class="field">Oda<input type="text" id="rooms" placeholder="3+1"></label>
+          <label class="field">m²<input type="text" id="area" inputmode="numeric" placeholder="140"></label>
+          <label class="field wide">Yetki belge no<input type="text" id="yetki"></label>
+        </div>
+        <label class="field">EİDS onaylı ilan linki<input type="text" id="eids" inputmode="url" placeholder="sahibinden.com/ilan/…"></label>
+      </section>
+
+      <section class="panel" aria-labelledby="stH">
+        <h2 id="stH">3 · Video ayarları</h2>
+        <div class="field">Boyut
+          <div class="seg" id="fmtSeg" role="group" aria-label="Boyut">
+            <button type="button" data-v="reel">Reels / Durum 9:16</button>
+            <button type="button" data-v="post">Gönderi 4:5</button>
+          </div>
+        </div>
+        <label class="field">Açılış yazısı<input type="text" id="hook" maxlength="28"></label>
+        <div class="chips" id="hookChips">
+          <button type="button">YENİ İLAN</button><button type="button">FIRSAT DAİRE</button><button type="button">FİYAT DÜŞTÜ</button><button type="button">HEMEN TAŞININ</button><button type="button">SON 1 DAİRE</button>
+        </div>
+        <div class="field">Fotoğraf başına süre
+          <div class="seg" id="durSeg" role="group" aria-label="Süre">
+            <button type="button" data-v="2">2 sn</button><button type="button" data-v="2.5">2,5 sn</button><button type="button" data-v="3">3 sn</button><button type="button" data-v="4">4 sn</button>
+          </div>
+        </div>
+        <div class="field">Geçiş
+          <div class="seg" id="trSeg" role="group" aria-label="Geçiş">
+            <button type="button" data-v="mix">Karışık</button><button type="button" data-v="fade">Yumuşak</button><button type="button" data-v="slide">Kaydır</button><button type="button" data-v="zoom">Zoom</button><button type="button" data-v="wipe">Altın perde</button>
+          </div>
+        </div>
+        <div class="field">Müzik
+          <div class="seg" id="muSeg" role="group" aria-label="Müzik">
+            <button type="button" data-v="calm">Sakin</button><button type="button" data-v="modern">Modern</button><button type="button" data-v="custom">Kendi müziğim</button><button type="button" data-v="none">Yok</button>
+          </div>
+        </div>
+        <div id="customBox" hidden>
+          <label class="btn ghost" for="musicIn" id="musicLbl">MP3 seç</label>
+          <input class="vh" id="musicIn" type="file" accept="audio/*">
+        </div>
+        <p class="hint">Sakin ve Modern müzikler bu sayfada üretilir, telif sorunu yoktur. İsterseniz Instagram'da paylaşırken oradan da müzik ekleyebilirsiniz.</p>
+      </section>
+    </div>
+  </div>
+</div>
+
+<div class="sheet" id="outSheet" hidden role="dialog" aria-modal="true" aria-labelledby="outH">
+  <div class="sheetbox">
+    <h2 id="outH">Video hazır</h2>
+    <video id="outVid" controls playsinline></video>
+    <button class="btn" id="shareBtn" type="button">Paylaş (WhatsApp, Instagram…)</button>
+    <a class="btn line" id="dlBtn" href="#" download>Telefona kaydet</a>
+    <p class="note" id="outNote"></p>
+    <button class="btn ghost" id="closeBtn" type="button">Kapat</button>
+  </div>
+</div>
+
+<script>
+'use strict';
+// ---------- brand constants (same as İlan Görseli) ----------
+const INK = '#2B2825', WHITE = '#FFFFFF', SOFT = '#7A7266';
+const CARD = '#F6F2EA', PRICE = '#8A6424', BRONZE = '#B08D57', CHAR = '#2B2825', CHAMP = '#E3CB98', GOLD = '#E2AE3B';
+const ICONS = {
+  phone: ['M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z'],
+  web: ['M12 2a10 10 0 1 0 0 20a10 10 0 1 0 0-20z', 'M2 12h20', 'M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z'],
+  insta: ['M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5z', 'M12 8a4 4 0 1 0 0 8a4 4 0 1 0 0-8z', 'M17.5 6.5h.01'],
+  pin: ['M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z', 'M12 7a3 3 0 1 0 0 6a3 3 0 1 0 0-6z']
+};
+const CONTACT = [['phone', '0554 257 55 55'], ['insta', 'evsam.gayrimenkul_'], ['web', 'evsamgayrimenkul.com']];
+const MOVES = [['auto', 'Otomatik'], ['in', 'Yaklaş'], ['out', 'Uzaklaş'], ['right', 'Sağa kay'], ['left', 'Sola kay'], ['up', 'Yukarı'], ['down', 'Aşağı']];
+const FITS = [['cover', 'Doldur'], ['contain', 'Tam göster']];
+
+const state = {
+  type: 'SATILIK', title: '', loc: '', price: '', rooms: '', area: '', yetki: '5500856', eids: '',
+  fmt: 'reel', hook: 'YENİ İLAN', dur: 3, trans: 'mix', music: 'calm', photos: []
+};
+const SAVE_KEYS = ['type', 'title', 'loc', 'price', 'rooms', 'area', 'yetki', 'eids', 'fmt', 'hook', 'dur', 'trans', 'music'];
+try { const s = JSON.parse(localStorage.getItem('evsam-video-v1') || '{}'); for (const k of SAVE_KEYS) if (k in s) state[k] = s[k]; } catch (e) {}
+if (state.music === 'custom') state.music = 'calm';
+function persist(){ try { const o = {}; for (const k of SAVE_KEYS) o[k] = state[k]; localStorage.setItem('evsam-video-v1', JSON.stringify(o)); } catch (e) {} }
+
+const $ = (id) => document.getElementById(id);
+const cv = $('cv'), ctx = cv.getContext('2d');
+let W = 1080, H = 1920, logoImg = null, customBuf = null, customName = '';
+
+// ---------- small helpers ----------
+const clamp = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v));
+const eio = (u) => 0.5 - Math.cos(Math.PI * clamp(u)) / 2;
+const eout = (u) => 1 - Math.pow(1 - clamp(u), 3);
+const TR = (s) => (s || '').toLocaleUpperCase('tr-TR');
+function spaced(px){ try { ctx.letterSpacing = px + 'px'; } catch (e) {} }
+function rr(x, y, w, h, r){
+  r = Math.min(r, w / 2, h / 2);
+  ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath();
+}
+function wrap(text, maxW, maxLines){
+  const words = text.split(/\s+/).filter(Boolean), lines = []; let cur = '';
+  for (const w of words){ const t = cur ? cur + ' ' + w : w;
+    if (ctx.measureText(t).width <= maxW || !cur) cur = t; else { lines.push(cur); cur = w; } }
+  if (cur) lines.push(cur);
+  if (lines.length > maxLines){ const keep = lines.slice(0, maxLines); keep[maxLines - 1] = fit(keep[maxLines - 1] + ' …', maxW); return keep; }
+  return lines.map(l => fit(l, maxW));
+}
+function fit(text, maxW){
+  if (ctx.measureText(text).width <= maxW) return text;
+  let t = text; while (t.length && ctx.measureText(t + '…').width > maxW) t = t.slice(0, -1);
+  return t + '…';
+}
+function F(weight, size){ ctx.font = weight + ' ' + Math.round(size) + 'px Montserrat, "Helvetica Neue", Arial, sans-serif'; }
+function icon(name, cx, cy, d, bg, fg){
+  ctx.fillStyle = bg; ctx.beginPath(); ctx.arc(cx, cy, d / 2, 0, Math.PI * 2); ctx.fill();
+  const sc = (d * 0.56) / 24;
+  ctx.save(); ctx.translate(cx - 12 * sc, cy - 12 * sc); ctx.scale(sc, sc);
+  ctx.strokeStyle = fg; ctx.lineWidth = 2.3; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  for (const p of ICONS[name]) ctx.stroke(new Path2D(p));
+  ctx.restore();
+}
+function priceLabel(){ return state.type === 'KAT KARŞILIĞI' ? 'ARSA SAHİBİNE' : state.type === 'KİRALIK' ? 'AYLIK KİRA' : 'SATIŞ FİYATI'; }
+function priceValue(){
+  const p = (state.price || '').trim(); if (!p) return '';
+  return state.type === 'KAT KARŞILIĞI' ? p : p + ' ₺';
+}
+function specs(){ const a = []; if (state.rooms) a.push(state.rooms.trim()); if (state.area) a.push(state.area.trim().replace(/\s*m²?$/i, '') + ' m²'); return a; }
+
+// ---------- timeline ----------
+const T = 0.6, OUTRO = 3.8;
+function timing(){
+  const n = state.photos.length, D = +state.dur, step = D - T;
+  return { n, D, step, total: n ? n * step + OUTRO : 0 };
+}
+const TRANS_CYCLE = ['slide', 'zoom', 'fade', 'wipe'];
+function transFor(k){ return state.trans === 'mix' ? TRANS_CYCLE[(k - 1) % TRANS_CYCLE.length] : state.trans; }
+
+function frame(t){
+  const tm = timing();
+  ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1; spaced(0);
+  ctx.fillStyle = CHAR; ctx.fillRect(0, 0, W, H);
+  if (!tm.n){ drawEmpty(); ctx.restore(); return; }
+  t = clamp(t, 0, tm.total - 0.001);
+  const k = Math.min(Math.floor(t / tm.step), tm.n), local = t - k * tm.step;
+  let toOutro = 0;
+  if (k > 0 && local < T){
+    const p = local / T, kind = transFor(k);
+    composite(kind, p, () => seg(k - 1, local + tm.step, tm), () => seg(k, local, tm));
+    if (k === tm.n) toOutro = eio(p);
+  } else seg(k, local, tm);
+  if (k === tm.n && local >= T) toOutro = 1;
+  // persistent overlays on top of photos
+  if (toOutro < 1){
+    ctx.globalAlpha = 1 - toOutro;
+    drawLogoPlate();
+    if (t > tm.step - 0.25) drawInfoBar(eout((t - tm.step + 0.25) / 0.6), t);
+    ctx.globalAlpha = 1;
+  }
+  ctx.restore();
+}
+
+function composite(kind, p, drawA, drawB){
+  const e = eio(p);
+  if (kind === 'slide'){
+    ctx.save(); ctx.translate(-W * e, 0); drawA(); ctx.restore();
+    ctx.save(); ctx.translate(W * (1 - e), 0); drawB(); ctx.restore();
+    ctx.fillStyle = GOLD; ctx.fillRect(W * (1 - e) - 10, 0, 10, H);
+  } else if (kind === 'zoom'){
+    ctx.save(); const z1 = 1 + 0.35 * e; ctx.translate(W / 2, H / 2); ctx.scale(z1, z1); ctx.translate(-W / 2, -H / 2); drawA(); ctx.restore();
+    ctx.save(); ctx.globalAlpha = e; const z2 = 1.25 - 0.25 * e; ctx.translate(W / 2, H / 2); ctx.scale(z2, z2); ctx.translate(-W / 2, -H / 2); drawB(); ctx.restore();
+    ctx.globalAlpha = Math.sin(Math.PI * p) * 0.35; ctx.fillStyle = '#FFFFFF'; ctx.fillRect(0, 0, W, H); ctx.globalAlpha = 1;
+  } else if (kind === 'wipe'){
+    drawA();
+    const x = -0.35 * W + e * 1.7 * W, sl = 0.35 * W;
+    ctx.save(); ctx.beginPath(); ctx.moveTo(-10, 0); ctx.lineTo(x + sl, 0); ctx.lineTo(x, H); ctx.lineTo(-10, H); ctx.closePath(); ctx.clip(); drawB(); ctx.restore();
+    ctx.save(); ctx.beginPath(); ctx.moveTo(x + sl, 0); ctx.lineTo(x + sl + 26, 0); ctx.lineTo(x + 26, H); ctx.lineTo(x, H); ctx.closePath();
+    ctx.fillStyle = GOLD; ctx.fill(); ctx.restore();
+  } else {
+    drawA(); ctx.save(); ctx.globalAlpha = e; drawB(); ctx.restore();
+  }
+}
+
+function seg(k, local, tm){
+  if (k >= tm.n){ drawOutro(local); return; }
+  const ph = state.photos[k];
+  drawPhoto(ph, k, clamp(local / tm.D));
+  // scrims for text legibility
+  let g = ctx.createLinearGradient(0, H * 0.45, 0, H);
+  g.addColorStop(0, 'rgba(20,18,16,0)'); g.addColorStop(1, 'rgba(20,18,16,0.62)');
+  ctx.fillStyle = g; ctx.fillRect(0, H * 0.45, W, H * 0.55);
+  g = ctx.createLinearGradient(0, 0, 0, H * 0.18);
+  g.addColorStop(0, 'rgba(20,18,16,0.35)'); g.addColorStop(1, 'rgba(20,18,16,0)');
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H * 0.18);
+  if (k === 0) drawHook(local, tm);
+  else if (ph.cap) drawCaption(ph.cap, local);
+}
+
+function moveFor(ph, k){
+  if (ph.move !== 'auto') return ph.move;
+  const wide = ph.c.width / ph.c.height > (W / H) * 1.3;
+  if (ph.fit === 'contain') return k % 2 ? 'out' : 'in';
+  if (wide) return k % 2 ? 'left' : 'right';
+  return k % 2 ? 'out' : 'in';
+}
+function coverDraw(img, z, ox, oy){
+  const iw = img.width, ih = img.height, sc = Math.max(W / iw, H / ih) * z;
+  const dw = iw * sc, dh = ih * sc;
+  ctx.drawImage(img, -(dw - W) * ox, -(dh - H) * oy, dw, dh);
+}
+function drawPhoto(ph, k, u){
+  const mv = moveFor(ph, k), img = ph.c;
+  if (ph.fit === 'contain'){
+    coverDraw(ph.b, 1.1, 0.5, 0.5);
+    ctx.fillStyle = 'rgba(20,18,16,0.28)'; ctx.fillRect(0, 0, W, H);
+    let z = mv === 'out' ? 1.06 - 0.06 * u : 1 + 0.06 * u;
+    const sc = Math.min(W / img.width, H / img.height) * z, dw = img.width * sc, dh = img.height * sc;
+    let dx = (W - dw) / 2, dy = (H - dh) / 2;
+    if (mv === 'right') dx += (eio(u) - 0.5) * -40; if (mv === 'left') dx += (eio(u) - 0.5) * 40;
+    ctx.save(); ctx.shadowColor = 'rgba(0,0,0,0.45)'; ctx.shadowBlur = 40; ctx.shadowOffsetY = 12;
+    ctx.drawImage(img, dx, dy, dw, dh); ctx.restore();
+    return;
+  }
+  const base = Math.max(W / img.width, H / img.height);
+  const overX = img.width * base - W, overY = img.height * base - H;
+  let z = 1, ox = 0.5, oy = 0.5;
+  if (mv === 'in') z = 1 + 0.14 * u;
+  else if (mv === 'out') z = 1.14 - 0.14 * u;
+  else if (mv === 'right' || mv === 'left'){ z = overX < W * 0.15 ? 1.18 : 1.05; ox = mv === 'right' ? eio(u) : 1 - eio(u); }
+  else if (mv === 'up' || mv === 'down'){ z = overY < H * 0.15 ? 1.18 : 1.05; oy = mv === 'down' ? eio(u) : 1 - eio(u); }
+  coverDraw(img, z, ox, oy);
+}
+
+// ---------- layout per format ----------
+function L(){
+  const reel = state.fmt === 'reel';
+  return reel
+    ? { reel, plateY: 120, hookBottom: 1170, barY: 1240, barH: 214 }
+    : { reel, plateY: 40, hookBottom: 900, barY: 1092, barH: 214 };
+}
+
+function drawLogoPlate(){
+  if (!logoImg) return;
+  const lw = 200, lh = lw / (717 / 328), pw = lw + 44, ph = lh + 28, x = (W - pw) / 2, y = L().plateY;
+  ctx.save(); ctx.shadowColor = 'rgba(0,0,0,0.25)'; ctx.shadowBlur = 20; ctx.shadowOffsetY = 6;
+  ctx.fillStyle = CARD; rr(x, y, pw, ph, 24); ctx.fill(); ctx.restore();
+  ctx.drawImage(logoImg, x + 22, y + 14, lw, lh);
+}
+
+function badge(text, x, y, size, align){
+  F(800, size); spaced(size * 0.17);
+  const tw = ctx.measureText(text).width + size * 2.1, th = size * 2.1;
+  const bx = align === 'center' ? x - tw / 2 : x;
+  ctx.save(); ctx.shadowColor = 'rgba(0,0,0,0.25)'; ctx.shadowBlur = 16; ctx.shadowOffsetY = 4;
+  ctx.fillStyle = CHAR; rr(bx, y, tw, th, th / 2); ctx.fill(); ctx.restore();
+  ctx.strokeStyle = BRONZE; ctx.lineWidth = 3; rr(bx + 1.5, y + 1.5, tw - 3, th - 3, (th - 3) / 2); ctx.stroke();
+  ctx.fillStyle = CHAMP; ctx.textBaseline = 'middle'; ctx.textAlign = 'left';
+  ctx.fillText(text, bx + size * 1.05, y + th / 2 + 2);
+  ctx.textBaseline = 'top'; spaced(0);
+  return th;
+}
+
+function drawHook(local, tm){
+  const lay = L(), x = 64, maxW = W - 128;
+  const out = 1 - clamp((local - (tm.D - T - 0.3)) / 0.4); // fade before the transition
+  const base = ctx.globalAlpha;
+  const A = (d) => { const a = eout((local - d) / 0.55); ctx.globalAlpha = base * a * out; return (1 - a) * 40; };
+  ctx.textBaseline = 'top'; ctx.textAlign = 'left';
+  F(800, 112); spaced(1);
+  const hook = TR(state.hook || 'YENİ İLAN');
+  const lines = wrap(hook, maxW, 2);
+  const locTxt = TR(state.loc);
+  const hHook = lines.length * 118, hLoc = locTxt ? 64 : 0, hBadge = 66 + 26;
+  let y = lay.hookBottom - (hBadge + hHook + hLoc);
+  // badge
+  let dy = A(0.15); badge(state.type, x, y + dy, 30); y += hBadge;
+  // headline
+  dy = A(0.3); F(800, 112); spaced(1); ctx.fillStyle = WHITE;
+  ctx.save(); ctx.shadowColor = 'rgba(0,0,0,0.45)'; ctx.shadowBlur = 24; ctx.shadowOffsetY = 4;
+  for (const l of lines){ ctx.fillText(l, x, y + dy); y += 118; }
+  ctx.restore(); spaced(0);
+  // gold rule
+  dy = A(0.45); ctx.fillStyle = GOLD; ctx.fillRect(x, y + 4 + dy, 140 * eout((local - 0.45) / 0.6), 8);
+  y += 22;
+  if (locTxt){
+    dy = A(0.55);
+    ctx.save(); ctx.shadowColor = 'rgba(0,0,0,0.5)'; ctx.shadowBlur = 14;
+    ctx.translate(x, y + dy + 2); ctx.scale(1.6, 1.6); ctx.strokeStyle = CHAMP; ctx.lineWidth = 2.4; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    for (const p of ICONS.pin) ctx.stroke(new Path2D(p)); ctx.restore();
+    ctx.save(); ctx.shadowColor = 'rgba(0,0,0,0.5)'; ctx.shadowBlur = 14;
+    F(700, 38); spaced(3); ctx.fillStyle = CHAMP; ctx.fillText(fit(locTxt, maxW - 56), x + 54, y + dy + 2); spaced(0); ctx.restore();
+  }
+  ctx.globalAlpha = base;
+}
+
+function drawCaption(cap, local){
+  const lay = L(), x = 64, base = ctx.globalAlpha;
+  const a = eout((local - 0.35) / 0.5);
+  ctx.globalAlpha = base * a;
+  F(800, 44); spaced(5); ctx.textBaseline = 'top'; ctx.textAlign = 'left';
+  const txt = fit(TR(cap), W - 160), y = lay.barY - 110 + (1 - a) * 24;
+  ctx.save(); ctx.shadowColor = 'rgba(0,0,0,0.55)'; ctx.shadowBlur = 18; ctx.fillStyle = WHITE; ctx.fillText(txt, x, y); ctx.restore();
+  const tw = ctx.measureText(txt).width; spaced(0);
+  ctx.fillStyle = GOLD; ctx.fillRect(x, y + 58, Math.min(tw, 180) * eout((local - 0.5) / 0.6), 6);
+  ctx.globalAlpha = base;
+}
+
+function drawInfoBar(a, t){
+  const lay = L(), x = 40, w = W - 80, h = lay.barH, y = lay.barY + (1 - a) * 60, base = ctx.globalAlpha;
+  ctx.globalAlpha = base * a;
+  ctx.save(); ctx.shadowColor = 'rgba(0,0,0,0.35)'; ctx.shadowBlur = 30; ctx.shadowOffsetY = 8;
+  ctx.fillStyle = 'rgba(43,40,37,0.92)'; rr(x, y, w, h, 28); ctx.fill(); ctx.restore();
+  ctx.strokeStyle = 'rgba(176,141,87,0.7)'; ctx.lineWidth = 2; rr(x + 1, y + 1, w - 2, h - 2, 27); ctx.stroke();
+  const pad = 36, sp = specs(), pv = priceValue();
+  ctx.textBaseline = 'top'; ctx.textAlign = 'left';
+  // chips on the right
+  F(800, 30); let cx = x + w - pad; const chipH = 58, chipY = y + 34;
+  const chipsW = [];
+  for (let i = sp.length - 1; i >= 0; i--){
+    const tw = ctx.measureText(sp[i]).width + 40; cx -= tw;
+    ctx.fillStyle = CHAMP; rr(cx, chipY, tw, chipH, chipH / 2); ctx.fill();
+    ctx.fillStyle = CHAR; ctx.textBaseline = 'middle'; ctx.fillText(sp[i], cx + 20, chipY + chipH / 2 + 2); ctx.textBaseline = 'top';
+    chipsW.push(tw); cx -= 12;
+  }
+  const leftMax = cx - (x + pad) - 10;
+  if (pv){
+    F(700, 18); spaced(3); ctx.fillStyle = 'rgba(227,203,152,0.75)'; ctx.fillText(priceLabel(), x + pad, y + 28); spaced(0);
+    F(800, 58); ctx.fillStyle = CHAMP; ctx.fillText(fit(pv, leftMax), x + pad, y + 54);
+  } else {
+    F(800, 34); ctx.fillStyle = CHAMP;
+    const ls = wrap(TR(state.title || state.type), leftMax, 2); let yy = y + (ls.length > 1 ? 34 : 50);
+    for (const l of ls){ ctx.fillText(l, x + pad, yy); yy += 40; }
+  }
+  ctx.fillStyle = 'rgba(227,203,152,0.22)'; ctx.fillRect(x + pad, y + 138, w - pad * 2, 2);
+  F(600, 21); ctx.fillStyle = 'rgba(246,242,234,0.85)';
+  const meta = [state.eids ? 'EİDS onaylı ilan' : '', state.yetki ? 'Yetki Belge No ' + state.yetki : '', '0554 257 55 55'].filter(Boolean).join('  ·  ');
+  ctx.fillText(fit(meta, w - pad * 2), x + pad, y + 158);
+  ctx.globalAlpha = base;
+}
+
+function drawOutro(local){
+  const reel = state.fmt === 'reel', S = reel ? 1 : 0.8, base = ctx.globalAlpha;
+  ctx.fillStyle = CARD; ctx.fillRect(0, 0, W, H);
+  // thin bronze frame
+  ctx.strokeStyle = BRONZE; ctx.lineWidth = 3; ctx.strokeRect(36, 36, W - 72, H - 72);
+  const cxm = W / 2, maxW = W - 180;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+  // measure blocks
+  F(800, 46 * S); const tl = state.title ? wrap(TR(state.title), maxW, reel ? 3 : 2) : [];
+  const pv = priceValue(), sp = specs(); if (state.loc) sp.push(state.loc.trim());
+  const lw = 460 * S, lh = lw / (717 / 328);
+  const blocks = [
+    ['logo', lh + 40 * S], ['badge', 64 * S + 34 * S], ['title', tl.length ? tl.length * 58 * S + 18 * S : 0],
+    ['price', pv ? 34 * S + 100 * S : 0], ['specs', sp.length ? 50 * S : 0], ['rule', 60 * S],
+    ['contact', CONTACT.length * 70 * S], ['legal', 70 * S]
+  ].filter(b => b[1] > 0);
+  const total = blocks.reduce((s, b) => s + b[1], 0);
+  let y = Math.max(70, (H - total) / 2), i = 0;
+  const A = () => { const d = 0.15 + i * 0.1; i++; const a = eout((local - d) / 0.55); ctx.globalAlpha = base * a; return (1 - a) * 34; };
+  for (const [name, h] of blocks){
+    const dy = A();
+    if (name === 'logo' && logoImg) ctx.drawImage(logoImg, cxm - lw / 2, y + dy, lw, lh);
+    if (name === 'badge'){ badge(state.type, cxm, y + dy, 28 * S, 'center'); ctx.textAlign = 'center'; }
+    if (name === 'title'){ F(800, 46 * S); ctx.fillStyle = INK; let yy = y + dy; for (const l of tl){ ctx.fillText(l, cxm, yy); yy += 58 * S; } }
+    if (name === 'price'){
+      F(700, 20 * S); spaced(4); ctx.fillStyle = SOFT; ctx.fillText(priceLabel(), cxm, y + dy); spaced(0);
+      F(800, 92 * S); ctx.fillStyle = PRICE; ctx.fillText(fit(pv, maxW), cxm, y + dy + 32 * S);
+    }
+    if (name === 'specs'){ F(700, 34 * S); ctx.fillStyle = SOFT; ctx.fillText(fit(sp.join('  ·  '), maxW), cxm, y + dy); }
+    if (name === 'rule'){ ctx.fillStyle = BRONZE; ctx.fillRect(cxm - 70, y + dy + 24 * S, 140, 4); }
+    if (name === 'contact'){
+      F(700, 36 * S); ctx.textAlign = 'left';
+      const d = 54 * S, wMax = Math.max(...CONTACT.map(c => ctx.measureText(c[1]).width)) + d + 22;
+      let yy = y + dy; const x0 = cxm - wMax / 2;
+      for (const [ic, txt] of CONTACT){
+        icon(ic, x0 + d / 2, yy + d / 2, d, CHAR, CHAMP);
+        ctx.fillStyle = INK; ctx.textBaseline = 'middle'; ctx.fillText(txt, x0 + d + 22, yy + d / 2 + 2); ctx.textBaseline = 'top';
+        yy += 70 * S;
+      }
+      ctx.textAlign = 'center';
+    }
+    if (name === 'legal'){
+      F(600, 23 * S); ctx.fillStyle = SOFT;
+      if (state.eids) ctx.fillText(fit('EİDS: ' + state.eids.replace(/^https?:\/\//, ''), maxW), cxm, y + dy + 10 * S);
+      if (state.yetki) ctx.fillText('Yetki Belge No: ' + state.yetki, cxm, y + dy + (state.eids ? 44 : 10) * S);
+    }
+    y += h;
+  }
+  ctx.globalAlpha = base; ctx.textAlign = 'left';
+}
+
+function drawEmpty(){
+  ctx.fillStyle = CARD; ctx.fillRect(0, 0, W, H);
+  ctx.strokeStyle = BRONZE; ctx.lineWidth = 3; ctx.strokeRect(36, 36, W - 72, H - 72);
+  if (logoImg){ const lw = 460, lh = lw / (717 / 328); ctx.drawImage(logoImg, (W - lw) / 2, H / 2 - lh - 60, lw, lh); }
+  ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+  F(800, 46); ctx.fillStyle = INK; ctx.fillText('İLAN VİDEOSU', W / 2, H / 2 + 10);
+  F(600, 32); ctx.fillStyle = SOFT; ctx.fillText('Başlamak için fotoğraf ekleyin', W / 2, H / 2 + 80);
+  ctx.textAlign = 'left';
+}
+
+// ---------- photos ----------
+async function addFiles(files){
+  const list = [...files].filter(f => f.type.startsWith('image/'));
+  if (!list.length) return;
+  const room = 15 - state.photos.length;
+  if (room <= 0){ setStatus('En fazla 15 fotoğraf eklenebilir.'); return; }
+  if (list.length > room) setStatus('İlk ' + room + ' fotoğraf eklendi. En fazla 15 fotoğraf eklenebilir.');
+  else setStatus('Fotoğraflar hazırlanıyor…');
+  for (const f of list.slice(0, room)){
+    try {
+      let src;
+      try { src = await createImageBitmap(f, { imageOrientation: 'from-image' }); }
+      catch (e) { src = await loadImg(URL.createObjectURL(f)); }
+      const w = src.width, h = src.height;
+      const sc = Math.min(1, Math.max(1080 / w, 1920 / h) * 1.08);
+      const c = document.createElement('canvas'); c.width = Math.round(w * sc); c.height = Math.round(h * sc);
+      const g = c.getContext('2d'); g.imageSmoothingQuality = 'high'; g.drawImage(src, 0, 0, c.width, c.height);
+      const bs = 48 / Math.max(w, h), b = document.createElement('canvas');
+      b.width = Math.max(2, Math.round(w * bs)); b.height = Math.max(2, Math.round(h * bs));
+      b.getContext('2d').drawImage(src, 0, 0, b.width, b.height);
+      if (src.close) src.close();
+      const th = document.createElement('canvas'), ts = 160 / Math.min(w, h);
+      th.width = Math.round(w * ts); th.height = Math.round(h * ts); th.getContext('2d').drawImage(c, 0, 0, th.width, th.height);
+      state.photos.push({ c, b, thumb: th.toDataURL('image/jpeg', 0.7), cap: '', move: 'auto', fit: 'cover' });
+    } catch (e) { setStatus('Bir fotoğraf açılamadı: ' + f.name); }
+  }
+  if (!statusLocked) setStatus(state.photos.length + ' fotoğraf hazır. Önizle\'ye basıp kontrol edin.');
+  renderList(); idleDraw();
+}
+function loadImg(src){ return new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = src; }); }
+
+function opt(list, cur){ return list.map(([v, t]) => '<option value="' + v + '"' + (v === cur ? ' selected' : '') + '>' + t + '</option>').join(''); }
+function esc(s){ return s.replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function renderList(){
+  const ul = $('plist'); $('pEmpty').hidden = state.photos.length > 0;
+  ul.innerHTML = state.photos.map((p, i) =>
+    '<li class="prow"><div class="pthumb"><img alt="" src="' + p.thumb + '"><b>' + (i + 1) + '</b></div>' +
+    '<div class="pmid"><input type="text" id="cap' + i + '" data-i="' + i + '" data-k="cap" aria-label="Fotoğraf ' + (i + 1) + ' oda adı" placeholder="' + (i === 0 ? 'Açılış fotoğrafı' : 'Oda adı, örn. Salon') + '" value="' + esc(p.cap) + '"' + (i === 0 ? ' disabled' : '') + '>' +
+    '<div class="two"><select id="mv' + i + '" data-i="' + i + '" data-k="move" aria-label="Kamera hareketi">' + opt(MOVES, p.move) + '</select>' +
+    '<select id="ft' + i + '" data-i="' + i + '" data-k="fit" aria-label="Yerleşim">' + opt(FITS, p.fit) + '</select></div></div>' +
+    '<div class="pacts"><button class="ico" type="button" data-a="up" data-i="' + i + '" aria-label="Yukarı taşı"' + (i ? '' : ' disabled') + '>↑</button>' +
+    '<button class="ico" type="button" data-a="down" data-i="' + i + '" aria-label="Aşağı taşı"' + (i < state.photos.length - 1 ? '' : ' disabled') + '>↓</button>' +
+    '<button class="ico del" type="button" data-a="del" data-i="' + i + '" aria-label="Sil">×</button></div></li>').join('');
+  updateMeta();
+}
+$('plist').addEventListener('input', (e) => { const el = e.target; if (el.dataset.k){ state.photos[+el.dataset.i][el.dataset.k] = el.value; idleDraw(); } });
+$('plist').addEventListener('click', (e) => {
+  const b = e.target.closest('button[data-a]'); if (!b || busy) return;
+  const i = +b.dataset.i, a = b.dataset.a, P = state.photos;
+  if (a === 'del') P.splice(i, 1);
+  if (a === 'up' && i > 0) [P[i - 1], P[i]] = [P[i], P[i - 1]];
+  if (a === 'down' && i < P.length - 1) [P[i + 1], P[i]] = [P[i], P[i + 1]];
+  renderList(); idleDraw();
+});
+$('fileIn').addEventListener('change', (e) => { addFiles(e.target.files); e.target.value = ''; });
+
+// ---------- form ----------
+function bindSeg(id, key, num){
+  const seg = $(id);
+  const sync = () => seg.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(String(state[key]) === b.dataset.v)));
+  seg.addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b || busy) return; state[key] = num ? +b.dataset.v : b.dataset.v; sync(); onChange(key); });
+  sync();
+}
+bindSeg('typeSeg', 'type'); bindSeg('fmtSeg', 'fmt'); bindSeg('durSeg', 'dur', true); bindSeg('trSeg', 'trans'); bindSeg('muSeg', 'music');
+for (const k of ['title', 'loc', 'price', 'rooms', 'area', 'yetki', 'eids', 'hook']){
+  const el = $(k); el.value = state[k] || '';
+  el.addEventListener('input', () => {
+    if (k === 'price' && state.type !== 'KAT KARŞILIĞI'){
+      const d = el.value.replace(/\D/g, ''); el.value = d ? Number(d).toLocaleString('tr-TR') : '';
+    }
+    state[k] = el.value; onChange(k);
+  });
+}
+$('hookChips').addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; $('hook').value = state.hook = b.textContent; onChange('hook'); });
+function onChange(key){
+  persist();
+  if (key === 'type'){ $('priceTxt').textContent = state.type === 'KAT KARŞILIĞI' ? 'Arsa sahibine oran' : state.type === 'KİRALIK' ? 'Aylık kira (₺)' : 'Fiyat (₺)';
+    $('price').inputMode = state.type === 'KAT KARŞILIĞI' ? 'text' : 'numeric'; $('price').placeholder = state.type === 'KAT KARŞILIĞI' ? '%50' : state.type === 'KİRALIK' ? '22.000' : '4.250.000'; }
+  if (key === 'fmt') setSize();
+  if (key === 'music') $('customBox').hidden = state.music !== 'custom';
+  updateMeta(); idleDraw();
+}
+$('musicIn').addEventListener('change', async (e) => {
+  const f = e.target.files[0]; if (!f) return;
+  try { const ac = getAC(); customBuf = await ac.decodeAudioData(await f.arrayBuffer()); customName = f.name;
+    $('musicLbl').textContent = '♪ ' + f.name; setStatus('Müzik eklendi.'); }
+  catch (err) { customBuf = null; setStatus('Bu ses dosyası açılamadı. MP3 veya M4A deneyin.'); }
+});
+function setSize(){
+  W = 1080; H = state.fmt === 'reel' ? 1920 : 1350; cv.width = W; cv.height = H;
+  cv.classList.toggle('post', state.fmt === 'post');
+}
+function fmtTime(s){ s = Math.max(0, Math.round(s)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); }
+function updateMeta(){
+  const tm = timing(); $('tInfo').textContent = tm.n + ' fotoğraf';
+  $('tClock').textContent = '0:00 / ' + fmtTime(tm.total);
+  $('makeBtn').disabled = $('playBtn').disabled = !tm.n && !busy;
+}
+let statusLocked = false;
+function setStatus(t){ $('status').textContent = t; }
+let idleT = null;
+function idleDraw(){ if (busy) return; clearTimeout(idleT); idleT = setTimeout(() => frame(timing().n ? 1.3 : 0), 30); }
+
+// ---------- music (generated in the browser, no copyright) ----------
+let AC = null;
+function getAC(){ if (!AC) AC = new (window.AudioContext || window.webkitAudioContext)(); return AC; }
+const mtof = (m) => 440 * Math.pow(2, (m - 69) / 12);
+function noiseBuf(ac){ const b = ac.createBuffer(1, ac.sampleRate, ac.sampleRate), d = b.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1; return b; }
+function impulse(ac, dur){
+  const len = Math.floor(ac.sampleRate * dur), b = ac.createBuffer(2, len, ac.sampleRate);
+  for (let c = 0; c < 2; c++){ const d = b.getChannelData(c); for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3); }
+  return b;
+}
+function buildMusic(ac, out, t0, total, style){
+  const end = t0 + total, nodes = [];
+  const master = ac.createGain(); master.gain.setValueAtTime(0.0001, t0);
+  master.gain.exponentialRampToValueAtTime(0.85, t0 + 1.2);
+  master.gain.setValueAtTime(0.85, Math.max(t0 + 1.3, end - 2.6)); master.gain.linearRampToValueAtTime(0.0001, end);
+  master.connect(out);
+  const verb = ac.createConvolver(); verb.buffer = impulse(ac, 2.6);
+  const wet = ac.createGain(); wet.gain.value = style === 'calm' ? 0.45 : 0.25; verb.connect(wet); wet.connect(master);
+  const lp = ac.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = style === 'calm' ? 1300 : 2200; lp.Q.value = 0.5;
+  const padBus = ac.createGain(); padBus.gain.value = 1; padBus.connect(lp); lp.connect(master); lp.connect(verb);
+  const dry = ac.createGain(); dry.connect(master); dry.connect(verb);
+  const nb = noiseBuf(ac);
+  const bpm = style === 'calm' ? 76 : 100, beat = 60 / bpm, bar = beat * 4;
+  // Am9 – Fmaj7 – C/E – G6 : warm, "home tour" feeling
+  const prog = [[57, 60, 64, 67, 71], [53, 57, 60, 64, 69], [52, 55, 60, 64, 67], [55, 59, 62, 64, 67]];
+  const roots = [45, 41, 40, 43];
+  const tone = (type, f, t, dur, peak, att, dest, detune) => {
+    if (t > end) return;
+    const o = ac.createOscillator(), g = ac.createGain(); o.type = type; o.frequency.value = f; if (detune) o.detune.value = detune;
+    g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(peak, t + att); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.connect(g); g.connect(dest); o.start(t); o.stop(Math.min(t + dur + 0.05, end + 0.1)); nodes.push(o);
+  };
+  const noise = (t, dur, peak, type, freq, dest) => {
+    if (t > end) return;
+    const s = ac.createBufferSource(), f = ac.createBiquadFilter(), g = ac.createGain(); s.buffer = nb; f.type = type; f.frequency.value = freq;
+    g.gain.setValueAtTime(peak, t); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    s.connect(f); f.connect(g); g.connect(dest); s.start(t); s.stop(t + dur + 0.05); nodes.push(s);
+  };
+  const kick = (t) => {
+    if (t > end) return;
+    const o = ac.createOscillator(), g = ac.createGain();
+    o.frequency.setValueAtTime(130, t); o.frequency.exponentialRampToValueAtTime(42, t + 0.14);
+    g.gain.setValueAtTime(0.7, t); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.38);
+    o.connect(g); g.connect(master); o.start(t); o.stop(t + 0.4); nodes.push(o);
+  };
+  for (let b = 0; t0 + b * bar < end; b++){
+    const tb = t0 + b * bar, ch = prog[b % 4], root = roots[b % 4];
+    for (const m of ch.slice(0, 4)){
+      tone(style === 'calm' ? 'triangle' : 'sawtooth', mtof(m), tb, bar + 0.8, style === 'calm' ? 0.05 : 0.022, 0.5, padBus, -7);
+      tone(style === 'calm' ? 'sine' : 'sawtooth', mtof(m), tb, bar + 0.8, style === 'calm' ? 0.035 : 0.022, 0.5, padBus, 7);
+    }
+    if (style === 'calm'){
+      tone('sine', mtof(root), tb, bar, 0.16, 0.08, dry);
+      // gentle bell arpeggio
+      const arp = [ch[4] + 12, ch[2] + 12, ch[3] + 12, ch[1] + 12];
+      arp.forEach((m, i) => tone('sine', mtof(m), tb + i * beat, beat * 2.2, 0.05, 0.01, dry));
+    } else {
+      for (let q = 0; q < 4; q++){
+        const tq = tb + q * beat;
+        kick(tq);
+        tone('sine', mtof(root), tq, beat * 0.9, 0.17, 0.02, dry);
+        noise(tq + beat / 2, 0.05, 0.05, 'highpass', 7500, dry);
+        if (q % 2) noise(tq, 0.16, 0.13, 'bandpass', 1600, dry);
+      }
+      const arp = [ch[0] + 12, ch[2] + 12, ch[4] + 12, ch[3] + 12, ch[1] + 12, ch[2] + 12, ch[4] + 12, ch[3] + 12];
+      arp.forEach((m, i) => tone('triangle', mtof(m), tb + i * beat / 2, beat * 0.7, 0.05, 0.005, dry));
+    }
+  }
+  return () => { for (const n of nodes){ try { n.stop(); } catch (e) {} } try { master.disconnect(); } catch (e) {} };
+}
+
+// ---------- preview / record ----------
+let busy = false, cancelRun = null;
+function pickMime(){
+  if (!window.MediaRecorder) return null;
+  const list = ['video/mp4;codecs=avc1.42E01E,mp4a.40.2', 'video/mp4;codecs=avc1,mp4a', 'video/mp4', 'video/webm;codecs=vp9,opus', 'video/webm;codecs=vp8,opus', 'video/webm'];
+  for (const m of list){ try { if (MediaRecorder.isTypeSupported(m)) return m; } catch (e) {} }
+  return '';
+}
+async function run(record){
+  const tm = timing(); if (!tm.n || busy) return;
+  if (state.music === 'custom' && !customBuf){ setStatus('Önce bir müzik dosyası seçin ya da başka bir müzik seçeneği seçin.'); return; }
+  let mime = null;
+  if (record){
+    mime = pickMime();
+    if (mime === null || !cv.captureStream){ setStatus('Bu tarayıcı video kaydedemiyor. Telefonda Chrome ya da Safari\'nin güncel sürümünü kullanın.'); return; }
+  }
+  busy = true; setButtons(record);
+  const ac = getAC(); try { await ac.resume(); } catch (e) {}
+  const out = ac.createGain(); out.connect(ac.destination);
+  let recDest = null;
+  if (record){ recDest = ac.createMediaStreamDestination(); out.connect(recDest); }
+  const t0 = ac.currentTime + 0.3;
+  let stopMusic = () => {};
+  if (state.music === 'calm' || state.music === 'modern') stopMusic = buildMusic(ac, out, t0, tm.total, state.music);
+  else if (state.music === 'custom' && customBuf){
+    const s = ac.createBufferSource(), g = ac.createGain(); s.buffer = customBuf; s.loop = customBuf.duration < tm.total;
+    g.gain.setValueAtTime(1, t0); g.gain.setValueAtTime(1, Math.max(t0, t0 + tm.total - 2.5)); g.gain.linearRampToValueAtTime(0.0001, t0 + tm.total);
+    s.connect(g); g.connect(out); s.start(t0); s.stop(t0 + tm.total + 0.1);
+    stopMusic = () => { try { s.stop(); } catch (e) {} };
+  }
+  let rec = null, chunks = [], lock = null;
+  if (record){
+    try { lock = await navigator.wakeLock?.request('screen'); } catch (e) {}
+    const stream = cv.captureStream(30);
+    if (state.music !== 'none') recDest.stream.getAudioTracks().forEach(tr => stream.addTrack(tr));
+    try { rec = new MediaRecorder(stream, Object.assign({ videoBitsPerSecond: 9000000, audioBitsPerSecond: 160000 }, mime ? { mimeType: mime } : {})); }
+    catch (e) { rec = new MediaRecorder(stream); }
+    rec.ondataavailable = (ev) => { if (ev.data && ev.data.size) chunks.push(ev.data); };
+    frame(0); rec.start(500);
+    setStatus('Video kaydediliyor… Kayıt bitene kadar ekranı kapatmayın ve sayfadan çıkmayın.');
+  } else setStatus('Önizleme oynatılıyor.');
+  let stopped = false;
+  const finish = (ok) => {
+    if (stopped) return; stopped = true;
+    stopMusic(); setTimeout(() => { try { out.disconnect(); } catch (e) {} }, 200);
+    try { lock && lock.release(); } catch (e) {}
+    if (rec){
+      rec.onstop = () => {
+        busy = false; setButtons(false); idleDraw();
+        if (!ok){ setStatus('Kayıt durduruldu.'); return; }
+        const type = (rec.mimeType || mime || 'video/webm').split(';')[0];
+        showResult(new Blob(chunks, { type }), type);
+      };
+      setTimeout(() => { try { rec.stop(); } catch (e) {} }, ok ? 250 : 0);
+    } else { busy = false; setButtons(false); if (ok) setStatus('Önizleme bitti. Beğendiyseniz "Videoyu oluştur"a basın.'); else setStatus(''); idleDraw(); }
+    $('bar').style.width = '0';
+  };
+  cancelRun = () => finish(false);
+  const loop = () => {
+    if (stopped) return;
+    const t = ac.currentTime - t0;
+    frame(Math.max(0, t));
+    $('bar').style.width = (clamp(t / tm.total) * 100) + '%';
+    $('tClock').textContent = fmtTime(clamp(t, 0, tm.total)) + ' / ' + fmtTime(tm.total);
+    if (t >= tm.total){ frame(tm.total); finish(true); return; }
+    requestAnimationFrame(loop);
+  };
+  requestAnimationFrame(loop);
+}
+function setButtons(active){
+  const pb = $('playBtn'), mb = $('makeBtn');
+  if (busy){ pb.textContent = 'Durdur'; pb.disabled = false; mb.disabled = true; mb.textContent = active ? 'Kaydediliyor…' : 'Videoyu oluştur'; }
+  else { pb.textContent = 'Önizle'; mb.textContent = 'Videoyu oluştur'; updateMeta(); }
+}
+$('playBtn').addEventListener('click', () => { if (busy){ cancelRun && cancelRun(); } else run(false); });
+$('makeBtn').addEventListener('click', () => run(true));
+document.addEventListener('visibilitychange', () => { if (document.hidden && busy && cancelRun){ cancelRun(); setStatus('Sayfadan çıkıldığı için kayıt durdu. Tekrar "Videoyu oluştur"a basın.'); } });
+
+let outURL = null, outFile = null;
+function showResult(blob, type){
+  if (outURL) URL.revokeObjectURL(outURL);
+  outURL = URL.createObjectURL(blob);
+  const ext = type.includes('mp4') ? 'mp4' : 'webm';
+  const d = new Date(), stamp = d.getFullYear() + String(d.getMonth() + 1).padStart(2, '0') + String(d.getDate()).padStart(2, '0') + '-' + String(d.getHours()).padStart(2, '0') + String(d.getMinutes()).padStart(2, '0');
+  const name = 'evsam-ilan-' + stamp + '.' + ext;
+  outFile = new File([blob], name, { type });
+  $('outVid').src = outURL; $('dlBtn').href = outURL; $('dlBtn').download = name;
+  let canShare = false; try { canShare = !!(navigator.canShare && navigator.canShare({ files: [outFile] })); } catch (e) {}
+  $('shareBtn').hidden = !canShare;
+  $('outNote').textContent = ext === 'mp4'
+    ? 'MP4 · ' + (blob.size / 1048576).toFixed(1) + ' MB. Instagram Reels, hikâye ve WhatsApp durumunda doğrudan paylaşılabilir.'
+    : 'WebM · ' + (blob.size / 1048576).toFixed(1) + ' MB. Bu tarayıcı MP4 üretemedi; Instagram ve WhatsApp WebM kabul etmeyebilir. Chrome\'u güncelleyip tekrar deneyin ya da telefonda Safari/Chrome kullanın.';
+  $('outSheet').hidden = false; setStatus('Video hazır.');
+}
+$('shareBtn').addEventListener('click', async () => {
+  try { await navigator.share({ files: [outFile], title: 'EVSAM Gayrimenkul', text: [state.type, state.title].filter(Boolean).join(' · ') }); }
+  catch (e) { if (e && e.name !== 'AbortError') setStatus('Paylaşım açılamadı. "Telefona kaydet" ile indirip uygulamadan paylaşın.'); }
+});
+$('closeBtn').addEventListener('click', () => { $('outSheet').hidden = true; $('outVid').pause(); });
+
+// ---------- boot ----------
+onChange('type'); $('customBox').hidden = state.music !== 'custom';
+setSize(); renderList(); frame(0);
+Promise.all([
+  loadImg('logo.png').then(i => { logoImg = i; }).catch(() => {}),
+  (document.fonts ? Promise.all(['800 40px Montserrat', '700 40px Montserrat', '600 40px Montserrat'].map(f => document.fonts.load(f))) : Promise.resolve()).catch(() => {})
+]).then(() => idleDraw());
+</script>
+</body>
+</html>
