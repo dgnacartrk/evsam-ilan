@@ -19,15 +19,15 @@ img{max-width:100%}
 /* Same look as the EVSAM İlan Görseli tool: phone-first stack, preview pinned on the right from 900px. */
 :root{
   --bg:#F1F1EF; --surface:#FFFFFF; --ink:#141416; --muted:#64646C; --line:#E2E0DB;
-  --gold:#9C6E16; --gold-fill:#E2AE3B; --on-gold:#141416; --field:#FAFAF8; --stage:#2B2825;
+  --gold:#9C6E16; --gold-fill:#E2AE3B; --on-gold:#141416; --field:#FAFAF8; --stage:#2B2825; --ok:#1F7A45;
   --font:'Montserrat', 'Helvetica Neue', Helvetica, sans-serif;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#111113; --surface:#1B1B1F; --ink:#F2F2EF; --muted:#A3A3AB; --line:#2C2C32;
-  --gold:#E2AE3B; --gold-fill:#E2AE3B; --on-gold:#141416; --field:#151518; --stage:#000000; color-scheme:dark}}
+  --gold:#E2AE3B; --gold-fill:#E2AE3B; --on-gold:#141416; --field:#151518; --stage:#000000; --ok:#4CC27E; color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#111113; --surface:#1B1B1F; --ink:#F2F2EF; --muted:#A3A3AB; --line:#2C2C32;
-  --gold:#E2AE3B; --gold-fill:#E2AE3B; --on-gold:#141416; --field:#151518; --stage:#000000; color-scheme:dark}
+  --gold:#E2AE3B; --gold-fill:#E2AE3B; --on-gold:#141416; --field:#151518; --stage:#000000; --ok:#4CC27E; color-scheme:dark}
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:15px;line-height:1.5;
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 48px}
@@ -69,25 +69,37 @@ input:focus-visible,select:focus-visible,button:focus-visible,a:focus-visible{ou
 .chips{display:flex;flex-wrap:wrap;gap:6px}
 .chips button{border:1px solid var(--line);background:var(--field);color:var(--ink);font:700 13px var(--font);border-radius:999px;padding:8px 12px;min-height:38px;cursor:pointer}
 .plist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
-.prow{display:grid;grid-template-columns:72px minmax(0,1fr) auto;gap:10px;align-items:center;border:1px solid var(--line);border-radius:14px;background:var(--field);padding:8px}
-.pthumb{position:relative;width:72px;height:72px;border-radius:10px;overflow:hidden;background:var(--line)}
+.prow{display:grid;grid-template-columns:84px minmax(0,1fr) auto;gap:10px;align-items:center;border:1px solid var(--line);border-radius:14px;background:var(--field);padding:8px}
+.pthumb{position:relative;width:84px;height:84px;border-radius:10px;overflow:hidden;background:var(--line);border:0;padding:0;cursor:pointer;display:block}
 .pthumb img{width:100%;height:100%;object-fit:cover;display:block}
 .pthumb b{position:absolute;left:4px;top:4px;background:rgba(14,14,16,.8);color:#fff;font:800 11px var(--font);padding:2px 6px;border-radius:6px}
+.pthumb i{position:absolute;width:16px;height:16px;margin:-8px 0 0 -8px;border-radius:50%;border:3px solid #E2AE3B;box-shadow:0 0 0 2px rgba(0,0,0,.45)}
+.pthumb span{position:absolute;inset:auto 0 0 0;background:rgba(14,14,16,.72);color:#fff;font:700 10px var(--font);padding:3px 0;text-align:center}
 .pmid{display:flex;flex-direction:column;gap:6px;min-width:0}
 .pmid input{min-height:40px;padding:8px 10px;font-size:15px}
-.pmid .two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:6px}
+.pmid .two{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:6px}
 .pmid select{min-height:38px;padding:6px 8px;font-size:13px}
 .pacts{display:flex;flex-direction:column;gap:4px}
 .ico{width:36px;height:34px;border-radius:9px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:800 15px/1 var(--font);cursor:pointer}
 .ico.del{color:#B3261E}
-.empty{border:1.5px dashed var(--line);border-radius:14px;padding:18px;text-align:center;color:var(--muted);font-weight:600;font-size:14px}
+.empty{border:1.5px dashed var(--line);border-radius:14px;padding:18px;text-align:center;color:var(--muted);font-weight:600;font-size:14px;margin:0}
+.check{display:flex;gap:12px;align-items:flex-start;background:var(--field);border:1px solid var(--line);border-radius:12px;padding:12px;cursor:pointer}
+.check input{width:22px;height:22px;margin:2px 0 0;accent-color:#E2AE3B;flex:0 0 auto}
+.check b{display:block;font-size:14px}
+.check small{display:block;color:var(--muted);font-size:12px;font-weight:500;line-height:1.4}
+.ai{font-size:12px;font-weight:700;color:var(--muted)}
+.ai.ok{color:var(--ok)}
 .sheet{position:fixed;inset:0;z-index:50;background:rgba(20,18,16,.78);display:flex;align-items:flex-start;justify-content:center;overflow-y:auto;
   padding:calc(env(safe-area-inset-top,0px) + 16px) max(16px,env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 16px) max(16px,env(safe-area-inset-left,0px))}
-.sheetbox{background:var(--surface);color:var(--ink);border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:12px;width:100%;max-width:440px}
+.sheetbox{background:var(--surface);color:var(--ink);border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:12px;width:100%;max-width:520px}
 .sheetbox h2{margin:0;font-size:18px;font-weight:800}
 .sheetbox video{width:100%;max-height:60vh;border-radius:12px;background:#000;display:block}
+.focwrap{position:relative;border-radius:12px;overflow:hidden;cursor:crosshair;touch-action:manipulation;background:#000;line-height:0}
+.focwrap img{width:100%;display:block;user-select:none;-webkit-user-drag:none}
+#focDot{position:absolute;width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;border:4px solid #E2AE3B;box-shadow:0 0 0 3px rgba(0,0,0,.45),inset 0 0 0 3px rgba(0,0,0,.25);pointer-events:none}
 .note{background:var(--field);border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:13px;font-weight:600;color:var(--muted);margin:0}
 .vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+#selftest{white-space:pre-wrap;font:600 12px/1.5 ui-monospace,Menlo,monospace;background:var(--field);border:1px solid var(--line);border-radius:12px;padding:12px;margin:0}
 @media (prefers-reduced-motion:no-preference){.btn{transition:transform .12s}.btn:active{transform:scale(.98)}}
 </style>
 </head>
@@ -97,10 +109,11 @@ input:focus-visible,select:focus-visible,button:focus-visible,a:focus-visible{ou
     <div>
       <div class="eyebrow">EVSAM Gayrimenkul</div>
       <h1>İlan Videosu Hazırla</h1>
-      <p class="sub">İlan fotoğraflarını yükleyin, bilgileri yazın. Kamera hareketli, müzikli, EVSAM logolu Reels videosu telefonunuzda oluşur. Ücretsizdir, fotoğraflar hiçbir yere gönderilmez.</p>
+      <p class="sub">Fotoğrafları yükleyin. Her fotoğrafta öne çıkan detay (deniz manzarası, mutfak, salon) bulunur, kamera ona göre 3D olarak içeri girer, yaklaşır, kayar ya da geri çekilir. Ücretsizdir, fotoğraflar hiçbir yere gönderilmez.</p>
     </div>
     <a class="toplink" href="./">İlan görseli aracı</a>
   </header>
+  <pre id="selftest" hidden></pre>
 
   <div class="grid">
     <div class="previewcol">
@@ -121,7 +134,8 @@ input:focus-visible,select:focus-visible,button:focus-visible,a:focus-visible{ou
         <input class="vh" id="fileIn" type="file" accept="image/*" multiple>
         <ul class="plist" id="plist"></ul>
         <p class="empty" id="pEmpty">En iyi sonuç için 6–12 fotoğraf seçin. İlk fotoğraf videonun açılışı olur.</p>
-        <p class="hint">Her fotoğrafa oda adı yazabilir (Salon, Mutfak…) ve kamera hareketini seçebilirsiniz. "Otomatik" yatay fotoğrafları yana kaydırarak odanın tamamını gösterir.</p>
+        <p class="hint">Sarı halka, kameranın gideceği detaydır. Değiştirmek için fotoğrafa dokunun ve öne çıkmasını istediğiniz yeri seçin. Hareket "Akıllı" iken her fotoğrafa içeriğine göre farklı bir hareket seçilir.</p>
+        <p class="ai" id="aiState"></p>
       </section>
 
       <section class="panel" aria-labelledby="inH">
@@ -134,7 +148,7 @@ input:focus-visible,select:focus-visible,button:focus-visible,a:focus-visible{ou
         <label class="field">Başlık<input type="text" id="title" placeholder="Deniz manzaralı, site içinde 3+1 daire"></label>
         <div class="row2">
           <label class="field">Konum<input type="text" id="loc" list="locs" placeholder="Atakum, Mimarsinan Mah."></label>
-          <label class="field" id="priceLbl"><span id="priceTxt">Fiyat (₺)</span><input type="text" id="price" inputmode="numeric" placeholder="4.250.000"></label>
+          <label class="field"><span id="priceTxt">Fiyat (₺)</span><input type="text" id="price" inputmode="numeric" placeholder="4.250.000"></label>
         </div>
         <datalist id="locs"><option value="Atakum"><option value="İlkadım"><option value="Canik"><option value="Atakum, Mimarsinan Mah."><option value="Atakum, Körfez Mah."><option value="İlkadım, Kale Mah."></datalist>
         <div class="row3">
@@ -147,6 +161,7 @@ input:focus-visible,select:focus-visible,button:focus-visible,a:focus-visible{ou
 
       <section class="panel" aria-labelledby="stH">
         <h2 id="stH">3 · Video ayarları</h2>
+        <label class="check" for="aiIn"><input type="checkbox" id="aiIn"><span><b>3D derinlik (yapay zeka)</b><small>Fotoğrafta neyin önde neyin arkada olduğunu bulur; kamera hareket edince ön taraf daha hızlı kayar ve gerçek çekim hissi verir. Ücretsizdir ve telefonda çalışır. İlk kullanımda bir kez yaklaşık 25 MB indirilir.</small></span></label>
         <div class="field">Boyut
           <div class="seg" id="fmtSeg" role="group" aria-label="Boyut">
             <button type="button" data-v="reel">Reels / Durum 9:16</button>
@@ -155,16 +170,16 @@ input:focus-visible,select:focus-visible,button:focus-visible,a:focus-visible{ou
         </div>
         <label class="field">Açılış yazısı<input type="text" id="hook" maxlength="28"></label>
         <div class="chips" id="hookChips">
-          <button type="button">YENİ İLAN</button><button type="button">FIRSAT DAİRE</button><button type="button">FİYAT DÜŞTÜ</button><button type="button">HEMEN TAŞININ</button><button type="button">SON 1 DAİRE</button>
+          <button type="button">YENİ İLAN</button><button type="button">DENİZ MANZARALI</button><button type="button">FIRSAT DAİRE</button><button type="button">FİYAT DÜŞTÜ</button><button type="button">HEMEN TAŞININ</button>
         </div>
         <div class="field">Fotoğraf başına süre
           <div class="seg" id="durSeg" role="group" aria-label="Süre">
-            <button type="button" data-v="2">2 sn</button><button type="button" data-v="2.5">2,5 sn</button><button type="button" data-v="3">3 sn</button><button type="button" data-v="4">4 sn</button>
+            <button type="button" data-v="2.5">2,5 sn</button><button type="button" data-v="3">3 sn</button><button type="button" data-v="3.5">3,5 sn</button><button type="button" data-v="4">4 sn</button>
           </div>
         </div>
         <div class="field">Geçiş
           <div class="seg" id="trSeg" role="group" aria-label="Geçiş">
-            <button type="button" data-v="mix">Karışık</button><button type="button" data-v="fade">Yumuşak</button><button type="button" data-v="slide">Kaydır</button><button type="button" data-v="zoom">Zoom</button><button type="button" data-v="wipe">Altın perde</button>
+            <button type="button" data-v="mix">Akıllı</button><button type="button" data-v="whip">Hızlı kaydır</button><button type="button" data-v="zoomthru">İçinden geç</button><button type="button" data-v="leak">Işık</button><button type="button" data-v="wipe">Altın perde</button><button type="button" data-v="fade">Yumuşak</button>
           </div>
         </div>
         <div class="field">Müzik
@@ -176,8 +191,21 @@ input:focus-visible,select:focus-visible,button:focus-visible,a:focus-visible{ou
           <label class="btn ghost" for="musicIn" id="musicLbl">MP3 seç</label>
           <input class="vh" id="musicIn" type="file" accept="audio/*">
         </div>
-        <p class="hint">Sakin ve Modern müzikler bu sayfada üretilir, telif sorunu yoktur. İsterseniz Instagram'da paylaşırken oradan da müzik ekleyebilirsiniz.</p>
+        <p class="hint">Sakin ve Modern müzikler bu sayfada üretilir, telif sorunu yoktur.</p>
       </section>
+    </div>
+  </div>
+</div>
+
+<div class="sheet" id="focSheet" hidden role="dialog" aria-modal="true" aria-labelledby="focH">
+  <div class="sheetbox">
+    <h2 id="focH">Odak noktası</h2>
+    <p class="hint">Videoda öne çıkmasını istediğiniz yere dokunun: deniz manzarası, mutfak tezgâhı, şömine… Kamera bu noktaya doğru hareket eder.</p>
+    <div class="focwrap" id="focWrap"><img id="focImg" alt="Seçilen fotoğraf"><span id="focDot"></span></div>
+    <label class="field">Kamera hareketi<select id="focMove"></select></label>
+    <div class="btns">
+      <button class="btn line" id="focAuto" type="button">Otomatik odak</button>
+      <button class="btn" id="focOk" type="button">Tamam</button>
     </div>
   </div>
 </div>
@@ -205,26 +233,37 @@ const ICONS = {
   pin: ['M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z', 'M12 7a3 3 0 1 0 0 6a3 3 0 1 0 0-6z']
 };
 const CONTACT = [['phone', '0554 257 55 55'], ['insta', 'evsam.gayrimenkul_'], ['web', 'evsamgayrimenkul.com']];
-const MOVES = [['auto', 'Otomatik'], ['in', 'Yaklaş'], ['out', 'Uzaklaş'], ['right', 'Sağa kay'], ['left', 'Sola kay'], ['up', 'Yukarı'], ['down', 'Aşağı']];
+const MOVE_NAMES = {
+  dollyIn: '3D içeri gir', dollyOut: '3D geri çekil', detail: 'Detaya yaklaş', reveal: 'Detaydan aç',
+  truckR: '3D sağa kay', truckL: '3D sola kay', orbit: '3D etrafında dön', up: 'Yukarı kalk', down: 'Aşağı in'
+};
+const FAMILY = { dollyIn: 'in', detail: 'in', dollyOut: 'out', reveal: 'out', truckR: 'lat', truckL: 'lat', orbit: 'orb', up: 'vert', down: 'vert' };
 const FITS = [['cover', 'Doldur'], ['contain', 'Tam göster']];
 
 const state = {
   type: 'SATILIK', title: '', loc: '', price: '', rooms: '', area: '', yetki: '5500856', eids: '',
-  fmt: 'reel', hook: 'YENİ İLAN', dur: 3, trans: 'mix', music: 'calm', photos: []
+  fmt: 'reel', hook: 'YENİ İLAN', dur: 3, trans: 'mix', music: 'calm', ai: true, photos: []
 };
-const SAVE_KEYS = ['type', 'title', 'loc', 'price', 'rooms', 'area', 'yetki', 'eids', 'fmt', 'hook', 'dur', 'trans', 'music'];
+const SAVE_KEYS = ['type', 'title', 'loc', 'price', 'rooms', 'area', 'yetki', 'eids', 'fmt', 'hook', 'dur', 'trans', 'music', 'ai'];
 try { const s = JSON.parse(localStorage.getItem('evsam-video-v1') || '{}'); for (const k of SAVE_KEYS) if (k in s) state[k] = s[k]; } catch (e) {}
 if (state.music === 'custom') state.music = 'calm';
+if (![2.5, 3, 3.5, 4].includes(+state.dur)) state.dur = 3;
+if (!['mix', 'whip', 'zoomthru', 'leak', 'wipe', 'fade'].includes(state.trans)) state.trans = 'mix';
 function persist(){ try { const o = {}; for (const k of SAVE_KEYS) o[k] = state[k]; localStorage.setItem('evsam-video-v1', JSON.stringify(o)); } catch (e) {} }
 
 const $ = (id) => document.getElementById(id);
-const cv = $('cv'), ctx = cv.getContext('2d');
-let W = 1080, H = 1920, logoImg = null, customBuf = null, customName = '';
+const cv = $('cv'), mainCtx = cv.getContext('2d');
+let ctx = mainCtx;                       // drawing target; swapped to off-screen buffers during transitions
+let W = 1080, H = 1920, logoImg = null, customBuf = null;
+const bufA = document.createElement('canvas'), bufB = document.createElement('canvas'), bufS = document.createElement('canvas');
+const ctxA = bufA.getContext('2d'), ctxB = bufB.getContext('2d'), ctxS = bufS.getContext('2d');
 
 // ---------- small helpers ----------
 const clamp = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v));
+const lerp = (a, b, t) => a + (b - a) * t;
 const eio = (u) => 0.5 - Math.cos(Math.PI * clamp(u)) / 2;
 const eout = (u) => 1 - Math.pow(1 - clamp(u), 3);
+const glide = (u) => 0.35 * clamp(u) + 0.65 * eio(u);   // keeps moving through the cut, never parks
 const TR = (s) => (s || '').toLocaleUpperCase('tr-TR');
 function spaced(px){ try { ctx.letterSpacing = px + 'px'; } catch (e) {} }
 function rr(x, y, w, h, r){
@@ -255,71 +294,411 @@ function icon(name, cx, cy, d, bg, fg){
   ctx.restore();
 }
 function priceLabel(){ return state.type === 'KAT KARŞILIĞI' ? 'ARSA SAHİBİNE' : state.type === 'KİRALIK' ? 'AYLIK KİRA' : 'SATIŞ FİYATI'; }
-function priceValue(){
-  const p = (state.price || '').trim(); if (!p) return '';
-  return state.type === 'KAT KARŞILIĞI' ? p : p + ' ₺';
-}
+function priceValue(){ const p = (state.price || '').trim(); if (!p) return ''; return state.type === 'KAT KARŞILIĞI' ? p : p + ' ₺'; }
 function specs(){ const a = []; if (state.rooms) a.push(state.rooms.trim()); if (state.area) a.push(state.area.trim().replace(/\s*m²?$/i, '') + ' m²'); return a; }
 
+// =====================================================================
+// IMAGE ANALYSIS: find the detail that stands out (saliency) and any
+// window / sea / sky view, then choose a camera move for each photo.
+// =====================================================================
+function analyze(src){
+  const long = 160, sc = long / Math.max(src.width, src.height);
+  const w = Math.max(8, Math.round(src.width * sc)), h = Math.max(8, Math.round(src.height * sc));
+  const c = document.createElement('canvas'); c.width = w; c.height = h;
+  const g = c.getContext('2d', { willReadFrequently: true }); g.drawImage(src, 0, 0, w, h);
+  const px = g.getImageData(0, 0, w, h).data, N = w * h;
+  const L = new Float32Array(N), A = new Float32Array(N), B = new Float32Array(N);
+  const lin = (v) => { v /= 255; return v <= 0.04045 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); };
+  const fl = (t) => t > 0.008856 ? Math.cbrt(t) : 7.787 * t + 16 / 116;
+  for (let i = 0; i < N; i++){
+    const r = lin(px[i * 4]), gg = lin(px[i * 4 + 1]), b = lin(px[i * 4 + 2]);
+    const X = (0.4124 * r + 0.3576 * gg + 0.1805 * b) / 0.95047, Y = 0.2126 * r + 0.7152 * gg + 0.0722 * b, Z = (0.0193 * r + 0.1192 * gg + 0.9505 * b) / 1.08883;
+    const fx = fl(X), fy = fl(Y), fz = fl(Z);
+    L[i] = 116 * fy - 16; A[i] = 500 * (fx - fy); B[i] = 200 * (fy - fz);
+  }
+  const blur = (arr) => { const o = new Float32Array(N);
+    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++){ let s = 0, n = 0;
+      for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++){ const xx = x + dx, yy = y + dy; if (xx >= 0 && yy >= 0 && xx < w && yy < h){ s += arr[yy * w + xx]; n++; } }
+      o[y * w + x] = s / n; } return o; };
+  const Lb = blur(blur(L)), Ab = blur(blur(A)), Bb = blur(blur(B));
+  let mL = 0, mA = 0, mB = 0; for (let i = 0; i < N; i++){ mL += Lb[i]; mA += Ab[i]; mB += Bb[i]; } mL /= N; mA /= N; mB /= N;
+  const ft = new Float32Array(N), ed = new Float32Array(N);
+  for (let i = 0; i < N; i++) ft[i] = Math.sqrt((Lb[i] - mL) ** 2 + 1.6 * (Ab[i] - mA) ** 2 + 1.6 * (Bb[i] - mB) ** 2);
+  for (let y = 1; y < h - 1; y++) for (let x = 1; x < w - 1; x++){
+    const i = y * w + x, l = (k) => Lb[k];
+    const gx = l(i - w + 1) + 2 * l(i + 1) + l(i + w + 1) - l(i - w - 1) - 2 * l(i - 1) - l(i + w - 1);
+    const gy = l(i + w - 1) + 2 * l(i + w) + l(i + w + 1) - l(i - w - 1) - 2 * l(i - w) - l(i - w + 1);
+    ed[i] = Math.hypot(gx, gy);
+  }
+  const norm = (arr) => { const s = Array.from(arr).sort((a, b) => a - b), hi = s[Math.floor(N * 0.99)] || 1; for (let i = 0; i < N; i++) arr[i] = Math.min(1, arr[i] / hi); };
+  norm(ft); const edB = blur(blur(ed)); norm(edB);
+  const S = new Float32Array(N);
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++){
+    const i = y * w + x, dx = x / w - 0.5, dy = y / h - 0.5;
+    S[i] = (0.55 * ft[i] + 0.45 * edB[i]) * (0.62 + 0.38 * Math.exp(-(dx * dx + dy * dy) / 0.12));
+  }
+  // best window (about a quarter of the frame) by summed saliency
+  const I = new Float64Array((w + 1) * (h + 1));
+  for (let y = 0; y < h; y++){ let row = 0; for (let x = 0; x < w; x++){ row += S[y * w + x]; I[(y + 1) * (w + 1) + x + 1] = I[y * (w + 1) + x + 1] + row; } }
+  const box = (x0, y0, x1, y1) => I[y1 * (w + 1) + x1] - I[y0 * (w + 1) + x1] - I[y1 * (w + 1) + x0] + I[y0 * (w + 1) + x0];
+  const ww = Math.max(4, Math.round(w * 0.26)), wh = Math.max(4, Math.round(h * 0.26)), mx = Math.round(w * 0.04), my = Math.round(h * 0.04);
+  let best = -1, bx = w / 2, by = h / 2;
+  for (let y = my; y + wh <= h - my; y += 2) for (let x = mx; x + ww <= w - mx; x += 2){
+    const v = box(x, y, x + ww, y + wh); if (v > best){ best = v; bx = x + ww / 2; by = y + wh / 2; }
+  }
+  // how concentrated is the interest? (small = a single detail worth zooming into)
+  const tot = box(0, 0, w, h) || 1, conc = best / tot;            // share of all saliency inside the window
+  // window / sea / sky: bright or clearly blue areas in the upper three quarters
+  let vn = 0, vx = 0, vy = 0;
+  for (let y = 0; y < Math.round(h * 0.78); y++) for (let x = 0; x < w; x++){
+    const i = y * w + x;
+    if ((Bb[i] < -9 && Lb[i] > 38) || Lb[i] > 93){ vn++; vx += x; vy += y; }
+  }
+  const view = vn / N > 0.045 ? { x: vx / vn / w, y: vy / vn / h, area: vn / N } : null;
+  return { f: { x: bx / w, y: by / h }, conc, view, small: c };
+}
+
+function heuristicDepth(src){
+  // no AI: assume the bottom of the frame (floor, furniture) is nearer than the top
+  const w = 96, h = Math.max(32, Math.round(96 * src.height / src.width));
+  const d = new Float32Array(w * h);
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) d[y * w + x] = 0.12 + 0.76 * Math.pow(y / (h - 1), 1.5);
+  return { w, h, d, ai: false };
+}
+function depthCanvas(dep){
+  const c = document.createElement('canvas'); c.width = dep.w; c.height = dep.h;
+  const g = c.getContext('2d'), im = g.createImageData(dep.w, dep.h);
+  for (let i = 0; i < dep.d.length; i++){ const v = Math.round(clamp(dep.d[i]) * 255); im.data[i * 4] = im.data[i * 4 + 1] = im.data[i * 4 + 2] = v; im.data[i * 4 + 3] = 255; }
+  g.putImageData(im, 0, 0); return c;
+}
+function depthAt(ph, x, y){
+  const dp = ph.dep; const xi = clamp(Math.round(x * (dp.w - 1)), 0, dp.w - 1), yi = clamp(Math.round(y * (dp.h - 1)), 0, dp.h - 1);
+  return dp.d[yi * dp.w + xi];
+}
+
+// ---------- AI depth (Depth Anything, runs in the browser, free) ----------
+let depthPipe = null, depthState = 'idle', depthWait = null, depthPct = 0;
+function aiLine(){
+  const el = $('aiState');
+  if (!state.ai){ el.textContent = ''; return; }
+  el.classList.toggle('ok', depthState === 'ready');
+  el.textContent = depthState === 'loading' ? '3D derinlik modeli indiriliyor… %' + depthPct + ' (yalnızca ilk sefer)'
+    : depthState === 'ready' ? '3D derinlik açık: fotoğraflarda ön ve arka plan ayrıldı.'
+    : depthState === 'failed' ? '3D derinlik modeli yüklenemedi; basit derinlikle devam ediliyor. İnternet bağlantınızı kontrol edip sayfayı yenileyebilirsiniz.' : '';
+}
+function loadDepth(){
+  if (depthWait) return depthWait;
+  depthState = 'loading'; aiLine();
+  const files = {};
+  const progress = (d) => {
+    if (d && d.status === 'progress' && d.file){ files[d.file] = [d.loaded || 0, d.total || 0];
+      let a = 0, b = 0; for (const k in files){ a += files[k][0]; b += files[k][1]; }
+      if (b) { depthPct = Math.min(99, Math.round(a / b * 100)); aiLine(); } }
+  };
+  const job = (async () => {
+    const T = await import('https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.0.2');
+    T.env.allowLocalModels = false;
+    const tries = [['onnx-community/depth-anything-v2-small', { dtype: 'q8' }], ['Xenova/depth-anything-small-hf', { dtype: 'q8' }], ['Xenova/depth-anything-small-hf', {}]];
+    let last = null;
+    for (const [m, o] of tries){
+      try { return await T.pipeline('depth-estimation', m, Object.assign({ progress_callback: progress }, o)); }
+      catch (e) { last = e; }
+    }
+    throw last || new Error('model');
+  })();
+  const timeout = new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 150000));
+  depthWait = Promise.race([job, timeout]).then(p => { depthPipe = p; depthState = 'ready'; aiLine(); return true; })
+    .catch((e) => { console.warn('depth model', e); depthState = 'failed'; aiLine(); return false; });
+  return depthWait;
+}
+async function aiDepth(ph){
+  const s = 518 / Math.max(ph.c.width, ph.c.height), c = document.createElement('canvas');
+  c.width = Math.round(ph.c.width * s); c.height = Math.round(ph.c.height * s); c.getContext('2d').drawImage(ph.c, 0, 0, c.width, c.height);
+  const blob = await new Promise(r => c.toBlob(r, 'image/jpeg', 0.92));
+  const url = URL.createObjectURL(blob);
+  try {
+    const out = await depthPipe(url);
+    const img = out.depth || (Array.isArray(out) ? out[0].depth : null);
+    const sw = img.width, sh = img.height, ch = img.channels || Math.round(img.data.length / (sw * sh));
+    // resample to a small smoothed map: soft depth gives fewer tearing artifacts
+    const w = 128, h = Math.max(32, Math.round(128 * sh / sw)), d = new Float32Array(w * h);
+    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++){
+      let acc = 0, n = 0;
+      const x0 = Math.floor(x * sw / w), x1 = Math.max(x0 + 1, Math.floor((x + 1) * sw / w)), y0 = Math.floor(y * sh / h), y1 = Math.max(y0 + 1, Math.floor((y + 1) * sh / h));
+      for (let yy = y0; yy < y1; yy += 2) for (let xx = x0; xx < x1; xx += 2){ acc += img.data[(yy * sw + xx) * ch]; n++; }
+      d[y * w + x] = acc / Math.max(1, n);
+    }
+    const sorted = Array.from(d).sort((a, b) => a - b), lo = sorted[Math.floor(d.length * 0.02)], hi = sorted[Math.floor(d.length * 0.98)] || lo + 1;
+    for (let i = 0; i < d.length; i++) d[i] = clamp((d[i] - lo) / (hi - lo || 1));
+    // two light box blurs
+    for (let pass = 0; pass < 2; pass++){
+      const o = new Float32Array(d.length);
+      for (let y = 0; y < h; y++) for (let x = 0; x < w; x++){ let s = 0, n = 0;
+        for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++){ const xx = x + dx, yy = y + dy; if (xx >= 0 && yy >= 0 && xx < w && yy < h){ s += d[yy * w + xx]; n++; } }
+        o[y * w + x] = s / n; }
+      d.set(o);
+    }
+    return { w, h, d, ai: true };
+  } finally { URL.revokeObjectURL(url); }
+}
+
+// ---------- choose a move for every photo ----------
+function extAt(ph, z){ const base = Math.max(W / ph.c.width, H / ph.c.height) * z; return { x: W / (ph.c.width * base), y: H / (ph.c.height * base) }; }
+function focusOf(ph, plan){
+  if (ph.userF) return ph.userF;
+  if (ph.an.view && (plan === 'dollyIn' || plan === 'orbit' || plan === 'dollyOut')) return { x: ph.an.view.x, y: Math.min(ph.an.view.y, 0.7) };
+  return ph.an.f;
+}
+function choreograph(){
+  const P = state.photos, used = [];
+  P.forEach((p, i) => {
+    if (!p.an) return;
+    if (p.move !== 'auto'){ p.plan = p.move; used.push(FAMILY[p.plan]); return; }
+    const ex = extAt(p, 1.18), roomX = ex.x < 0.74, roomY = ex.y < 0.74;
+    const fx = (p.userF || p.an.f).x, fy = (p.userF || p.an.f).y;
+    let c = [];
+    if (p.fit === 'contain') c = i % 2 ? ['dollyOut'] : ['dollyIn'];
+    else if (i === 0) c = p.an.view ? ['dollyIn', 'reveal'] : p.an.conc > 0.17 ? ['reveal', 'dollyIn'] : ['dollyIn', 'orbit'];
+    else if (i === P.length - 1 && P.length > 2) c = ['dollyOut', 'reveal', 'orbit'];
+    else {
+      if (p.an.view) c.push('dollyIn');
+      if (p.an.conc > 0.15 || p.userF) c.push('detail');
+      if (roomX) c.push(fx >= 0.5 ? 'truckR' : 'truckL');
+      c.push('orbit');
+      if (p.an.conc > 0.13) c.push('reveal');
+      if (roomY) c.push(fy < 0.45 ? 'up' : 'down');
+      c.push('dollyIn', 'dollyOut', fx >= 0.5 ? 'truckR' : 'truckL');
+    }
+    const last = used[used.length - 1], last2 = used[used.length - 2];
+    let pick = c.find(m => FAMILY[m] !== last && FAMILY[m] !== last2) || c.find(m => FAMILY[m] !== last) || c[0];
+    p.plan = pick; used.push(FAMILY[pick]);
+  });
+  P.forEach(p => { if (p.an) p.F = focusOf(p, p.plan); });
+}
+
+// =====================================================================
+// RENDERING: WebGL draws the photo with a depth-aware ("2.5D") camera
+// =====================================================================
+const glc = document.createElement('canvas');
+let gl = null, glProg = null, U = {}, glOK = null;
+const texCache = new Map();
+function initGL(){
+  if (glOK !== null) return glOK;
+  glc.width = 1080; glc.height = 1920;
+  try { gl = glc.getContext('webgl', { preserveDrawingBuffer: true, antialias: false, premultipliedAlpha: false }); } catch (e) { gl = null; }
+  if (!gl){ glOK = false; return false; }
+  const vs = 'attribute vec2 p;varying vec2 v;void main(){v=vec2(p.x*.5+.5,.5-p.y*.5);gl_Position=vec4(p,0.,1.);}';
+  const fs = 'precision highp float;varying vec2 v;uniform sampler2D ti,td;uniform vec2 c,ext,f,sh;uniform float n0,dz;' +
+    'void main(){vec2 b=c+(v-.5)*ext;vec2 uv=b;' +
+    'for(int i=0;i<7;i++){float k=texture2D(td,uv).r-n0;vec2 t=f+(b+sh*k-f)/(1.+dz*k);uv=mix(uv,t,.7);}' +
+    'gl_FragColor=vec4(texture2D(ti,clamp(uv,vec2(.0015),vec2(.9985))).rgb,1.);}';
+  const sh = (type, src) => { const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s)); return s; };
+  try {
+    glProg = gl.createProgram(); gl.attachShader(glProg, sh(gl.VERTEX_SHADER, vs)); gl.attachShader(glProg, sh(gl.FRAGMENT_SHADER, fs)); gl.linkProgram(glProg);
+    if (!gl.getProgramParameter(glProg, gl.LINK_STATUS)) throw new Error('link');
+  } catch (e) { console.warn(e); glOK = false; return false; }
+  gl.useProgram(glProg);
+  const buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
+  const loc = gl.getAttribLocation(glProg, 'p'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+  for (const n of ['ti', 'td', 'c', 'ext', 'f', 'sh', 'n0', 'dz']) U[n] = gl.getUniformLocation(glProg, n);
+  gl.uniform1i(U.ti, 0); gl.uniform1i(U.td, 1);
+  glOK = true; return true;
+}
+function mkTex(src){
+  const t = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, t);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, src); return t;
+}
+function texFor(ph){
+  let e = texCache.get(ph);
+  if (e && e.depV !== ph.depV){ gl.deleteTexture(e.dep); e.dep = mkTex(ph.depC); e.depV = ph.depV; }
+  if (!e){
+    e = { img: mkTex(ph.c), dep: mkTex(ph.depC), depV: ph.depV };
+    texCache.set(ph, e);
+    while (texCache.size > 4){ const [k, v] = texCache.entries().next().value; gl.deleteTexture(v.img); gl.deleteTexture(v.dep); texCache.delete(k); }
+  } else { texCache.delete(ph); texCache.set(ph, e); }
+  return e;
+}
+function dropTex(ph){ const e = texCache.get(ph); if (e && gl){ gl.deleteTexture(e.img); gl.deleteTexture(e.dep); } texCache.delete(ph); }
+
+// camera for a photo at progress u (0..1): view centre, zoom, parallax shift, depth dolly
+function cam(ph, u){
+  const P = ph.dep.ai ? 1 : 0.55, Fo = ph.F || { x: 0.5, y: 0.5 }, C = { x: 0.5, y: 0.5 }, g = glide(u);
+  let z = 1.1, c = { x: 0.5, y: 0.5 }, sh = { x: 0, y: 0 }, dz = 0;
+  const towards = (t) => ({ x: lerp(C.x, Fo.x, t), y: lerp(C.y, Fo.y, t) });
+  switch (ph.plan){
+    case 'dollyIn': z = 1.06 + 0.3 * g; c = towards(0.15 + 0.7 * g); dz = 0.34 * g * P; break;
+    case 'dollyOut': { const r = 1 - g; z = 1.06 + 0.3 * r; c = towards(0.15 + 0.7 * r); dz = 0.34 * r * P; break; }
+    case 'detail': z = 1.05 + 0.95 * g; c = towards(g); dz = 0.12 * g * P; break;
+    case 'reveal': { const r = 1 - g; z = 1.05 + 0.95 * r; c = towards(r); dz = 0.12 * r * P; break; }
+    case 'truckR': case 'truckL': {
+      const s = ph.plan === 'truckR' ? 1 : -1; z = 1.16 + 0.04 * g;
+      const ex = extAt(ph, z).x, lo = ex / 2, hi = 1 - ex / 2;
+      const end = clamp(Fo.x, lo, hi), start = clamp(end - s * Math.max(0.16, (hi - lo) * 0.7), lo, hi);
+      c = { x: lerp(start, end, g), y: lerp(0.5, Fo.y, 0.5) }; sh = { x: s * 0.075 * P * (g - 0.5), y: 0 }; break;
+    }
+    case 'orbit': z = 1.2 + 0.06 * g; c = towards(0.55); sh = { x: 0.11 * P * (g - 0.5), y: -0.02 * P * (g - 0.5) }; dz = 0.06 * P; break;
+    case 'up': case 'down': {
+      const s = ph.plan === 'down' ? 1 : -1; z = 1.16 + 0.04 * g;
+      const ey = extAt(ph, z).y, lo = ey / 2, hi = 1 - ey / 2;
+      const end = clamp(Fo.y, lo, hi), start = clamp(end - s * Math.max(0.14, (hi - lo) * 0.7), lo, hi);
+      c = { x: lerp(0.5, Fo.x, 0.5), y: lerp(start, end, g) }; sh = { x: 0, y: s * 0.07 * P * (g - 0.5) }; break;
+    }
+  }
+  const ex = extAt(ph, z), m = 0.004;
+  const mxp = Math.abs(sh.x) * 0.6 + m, myp = Math.abs(sh.y) * 0.6 + m;
+  c.x = ex.x >= 1 - 2 * mxp ? 0.5 : clamp(c.x, ex.x / 2 + mxp, 1 - ex.x / 2 - mxp);
+  c.y = ex.y >= 1 - 2 * myp ? 0.5 : clamp(c.y, ex.y / 2 + myp, 1 - ex.y / 2 - myp);
+  return { z, c, ex, sh, dz, n0: depthAt(ph, Fo.x, Fo.y), f: Fo };
+}
+
+function drawPhoto(ph, u){
+  if (ph.fit === 'contain'){ drawContain(ph, u); return; }
+  const k = cam(ph, u);
+  if (initGL()){
+    if (glc.width !== W || glc.height !== H){ glc.width = W; glc.height = H; }
+    gl.viewport(0, 0, W, H);
+    const t = texFor(ph);
+    gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, t.img);
+    gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, t.dep);
+    gl.uniform2f(U.c, k.c.x, k.c.y); gl.uniform2f(U.ext, k.ex.x, k.ex.y); gl.uniform2f(U.f, k.f.x, k.f.y);
+    gl.uniform2f(U.sh, k.sh.x, k.sh.y); gl.uniform1f(U.n0, k.n0); gl.uniform1f(U.dz, k.dz);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    ctx.drawImage(glc, 0, 0, W, H);
+  } else {
+    // 2D fallback: same framing without the depth effect
+    const iw = ph.c.width, ih = ph.c.height;
+    ctx.drawImage(ph.c, (k.c.x - k.ex.x / 2) * iw, (k.c.y - k.ex.y / 2) * ih, k.ex.x * iw, k.ex.y * ih, 0, 0, W, H);
+  }
+}
+function coverDraw(img, z){
+  const iw = img.width, ih = img.height, sc = Math.max(W / iw, H / ih) * z, dw = iw * sc, dh = ih * sc;
+  ctx.drawImage(img, (W - dw) / 2, (H - dh) / 2, dw, dh);
+}
+function drawContain(ph, u){
+  coverDraw(ph.b, 1.1);
+  ctx.fillStyle = 'rgba(20,18,16,0.28)'; ctx.fillRect(0, 0, W, H);
+  const g = glide(u), zin = ph.plan !== 'dollyOut' && ph.plan !== 'reveal';
+  const z = zin ? 1 + 0.07 * g : 1.07 - 0.07 * g;
+  const img = ph.c, sc = Math.min(W / img.width, H / img.height) * z, dw = img.width * sc, dh = img.height * sc;
+  const Fo = ph.F || { x: 0.5, y: 0.5 };
+  const dx = (W - dw) / 2 - (Fo.x - 0.5) * (dw - dw / z) * 2, dy = (H - dh) / 2 - (Fo.y - 0.5) * (dh - dh / z) * 2;
+  ctx.save(); ctx.shadowColor = 'rgba(0,0,0,0.45)'; ctx.shadowBlur = 40; ctx.shadowOffsetY = 12;
+  ctx.drawImage(img, dx, dy, dw, dh); ctx.restore();
+}
+
 // ---------- timeline ----------
-const T = 0.6, OUTRO = 3.8;
+const T = 0.7, OUTRO = 3.8;
 function timing(){
   const n = state.photos.length, D = +state.dur, step = D - T;
   return { n, D, step, total: n ? n * step + OUTRO : 0 };
 }
-const TRANS_CYCLE = ['slide', 'zoom', 'fade', 'wipe'];
-function transFor(k){ return state.trans === 'mix' ? TRANS_CYCLE[(k - 1) % TRANS_CYCLE.length] : state.trans; }
+function transFor(k){
+  if (state.trans !== 'mix') return state.trans === 'whip' ? whipFor(k) : state.trans;
+  const prev = state.photos[k - 1], plan = prev && prev.plan;
+  let t;
+  if (k === state.photos.length) t = 'leak';
+  else if (plan === 'truckR' || plan === 'truckL' || plan === 'up' || plan === 'down' || plan === 'orbit') t = whipFor(k);
+  else if (plan === 'dollyIn' || plan === 'detail') t = 'zoomthru';
+  else t = k % 2 ? 'leak' : 'wipe';
+  const before = k > 1 ? transFor(k - 1) : '';
+  if (before === t) t = t === 'wipe' ? 'leak' : 'wipe';
+  return t;
+}
+function whipFor(k){
+  const p = state.photos[k - 1] && state.photos[k - 1].plan;
+  return p === 'truckL' ? 'whipL' : p === 'up' ? 'whipU' : p === 'down' ? 'whipD' : 'whipR';
+}
 
 function frame(t){
   const tm = timing();
-  ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1; spaced(0);
+  ctx = mainCtx;
+  ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over'; spaced(0);
   ctx.fillStyle = CHAR; ctx.fillRect(0, 0, W, H);
   if (!tm.n){ drawEmpty(); ctx.restore(); return; }
+  if (state.photos.some(p => !p.an)){ ctx.restore(); return; }
   t = clamp(t, 0, tm.total - 0.001);
   const k = Math.min(Math.floor(t / tm.step), tm.n), local = t - k * tm.step;
   let toOutro = 0;
   if (k > 0 && local < T){
-    const p = local / T, kind = transFor(k);
-    composite(kind, p, () => seg(k - 1, local + tm.step, tm), () => seg(k, local, tm));
+    const p = local / T;
+    renderTo(ctxA, () => seg(k - 1, local + tm.step, tm));
+    renderTo(ctxB, () => seg(k, local, tm));
+    composite(transFor(k), p, k);
     if (k === tm.n) toOutro = eio(p);
   } else seg(k, local, tm);
   if (k === tm.n && local >= T) toOutro = 1;
-  // persistent overlays on top of photos
   if (toOutro < 1){
     ctx.globalAlpha = 1 - toOutro;
     drawLogoPlate();
-    if (t > tm.step - 0.25) drawInfoBar(eout((t - tm.step + 0.25) / 0.6), t);
+    if (t > tm.step - 0.25) drawInfoBar(eout((t - tm.step + 0.25) / 0.6));
     ctx.globalAlpha = 1;
   }
   ctx.restore();
 }
-
-function composite(kind, p, drawA, drawB){
+function renderTo(c2, fn){
+  const prev = ctx; ctx = c2;
+  ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over';
+  ctx.fillStyle = CHAR; ctx.fillRect(0, 0, W, H); fn(); ctx.restore();
+  ctx = prev;
+}
+function blurOf(src, amount){
+  // cheap blur: shrink then stretch
+  const s = Math.max(6, Math.round(W / (4 + amount * 22))), h = Math.round(s * H / W);
+  if (bufS.width !== s || bufS.height !== h){ bufS.width = s; bufS.height = h; }
+  ctxS.imageSmoothingQuality = 'low'; ctxS.drawImage(src, 0, 0, s, h); return bufS;
+}
+function composite(kind, p, k){
   const e = eio(p);
-  if (kind === 'slide'){
-    ctx.save(); ctx.translate(-W * e, 0); drawA(); ctx.restore();
-    ctx.save(); ctx.translate(W * (1 - e), 0); drawB(); ctx.restore();
-    ctx.fillStyle = GOLD; ctx.fillRect(W * (1 - e) - 10, 0, 10, H);
-  } else if (kind === 'zoom'){
-    ctx.save(); const z1 = 1 + 0.35 * e; ctx.translate(W / 2, H / 2); ctx.scale(z1, z1); ctx.translate(-W / 2, -H / 2); drawA(); ctx.restore();
-    ctx.save(); ctx.globalAlpha = e; const z2 = 1.25 - 0.25 * e; ctx.translate(W / 2, H / 2); ctx.scale(z2, z2); ctx.translate(-W / 2, -H / 2); drawB(); ctx.restore();
-    ctx.globalAlpha = Math.sin(Math.PI * p) * 0.35; ctx.fillStyle = '#FFFFFF'; ctx.fillRect(0, 0, W, H); ctx.globalAlpha = 1;
+  if (kind.startsWith('whip')){
+    const dir = kind === 'whipR' ? [-1, 0] : kind === 'whipL' ? [1, 0] : kind === 'whipU' ? [0, 1] : [0, -1];
+    const span = dir[0] ? W : H, off = e * span, speed = Math.sin(Math.PI * p), taps = 6, spread = 0.09 * span * speed;
+    for (let i = 0; i < taps; i++){
+      const o = off + spread * (i / (taps - 1) - 0.5);
+      ctx.globalAlpha = 1 / (i + 1);
+      ctx.drawImage(bufA, dir[0] * o, dir[1] * o);
+      ctx.drawImage(bufB, dir[0] * (o - span), dir[1] * (o - span));
+    }
+    ctx.globalAlpha = 1;
+  } else if (kind === 'zoomthru'){
+    const prev = state.photos[k - 1], f = prev && prev.F ? { x: W / 2, y: H / 2 } : { x: W / 2, y: H / 2 };
+    const za = 1 + 1.4 * Math.pow(e, 1.6), zb = 1.35 - 0.35 * e;
+    ctx.save(); ctx.translate(f.x, f.y); ctx.scale(za, za); ctx.translate(-f.x, -f.y);
+    ctx.drawImage(blurOf(bufA, e), 0, 0, W, H); ctx.globalAlpha = 1 - e; ctx.drawImage(bufA, 0, 0); ctx.restore();
+    ctx.save(); ctx.globalAlpha = clamp((p - 0.25) / 0.6); ctx.translate(W / 2, H / 2); ctx.scale(zb, zb); ctx.translate(-W / 2, -H / 2);
+    ctx.drawImage(bufB, 0, 0); ctx.restore();
+    ctx.globalAlpha = Math.sin(Math.PI * p) * 0.28; ctx.fillStyle = '#FFF6E6'; ctx.fillRect(0, 0, W, H); ctx.globalAlpha = 1;
+  } else if (kind === 'leak'){
+    ctx.drawImage(bufA, 0, 0); ctx.globalAlpha = e; ctx.drawImage(bufB, 0, 0); ctx.globalAlpha = 1;
+    const a = Math.sin(Math.PI * p);
+    ctx.globalCompositeOperation = 'lighter';
+    const x = lerp(-0.2 * W, 1.2 * W, p), y = H * 0.35;
+    let g = ctx.createRadialGradient(x, y, 0, x, y, W * 0.95);
+    g.addColorStop(0, 'rgba(255,190,110,' + (0.75 * a) + ')'); g.addColorStop(0.45, 'rgba(255,120,60,' + (0.35 * a) + ')'); g.addColorStop(1, 'rgba(255,90,40,0)');
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+    g = ctx.createRadialGradient(W - x, H * 0.8, 0, W - x, H * 0.8, W * 0.7);
+    g.addColorStop(0, 'rgba(255,225,170,' + (0.45 * a) + ')'); g.addColorStop(1, 'rgba(255,225,170,0)');
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+    ctx.globalCompositeOperation = 'source-over';
   } else if (kind === 'wipe'){
-    drawA();
+    ctx.drawImage(bufA, 0, 0);
     const x = -0.35 * W + e * 1.7 * W, sl = 0.35 * W;
-    ctx.save(); ctx.beginPath(); ctx.moveTo(-10, 0); ctx.lineTo(x + sl, 0); ctx.lineTo(x, H); ctx.lineTo(-10, H); ctx.closePath(); ctx.clip(); drawB(); ctx.restore();
+    ctx.save(); ctx.beginPath(); ctx.moveTo(-10, 0); ctx.lineTo(x + sl, 0); ctx.lineTo(x, H); ctx.lineTo(-10, H); ctx.closePath(); ctx.clip(); ctx.drawImage(bufB, 0, 0); ctx.restore();
     ctx.save(); ctx.beginPath(); ctx.moveTo(x + sl, 0); ctx.lineTo(x + sl + 26, 0); ctx.lineTo(x + 26, H); ctx.lineTo(x, H); ctx.closePath();
-    ctx.fillStyle = GOLD; ctx.fill(); ctx.restore();
+    ctx.shadowColor = 'rgba(226,174,59,0.8)'; ctx.shadowBlur = 40; ctx.fillStyle = GOLD; ctx.fill(); ctx.restore();
   } else {
-    drawA(); ctx.save(); ctx.globalAlpha = e; drawB(); ctx.restore();
+    // soft: crossfade with a little blur in the middle
+    ctx.drawImage(bufA, 0, 0); ctx.globalAlpha = e; ctx.drawImage(bufB, 0, 0);
+    ctx.globalAlpha = Math.sin(Math.PI * p) * 0.6; ctx.drawImage(blurOf(mainCtx.canvas, 0.6), 0, 0, W, H); ctx.globalAlpha = 1;
   }
 }
 
 function seg(k, local, tm){
   if (k >= tm.n){ drawOutro(local); return; }
   const ph = state.photos[k];
-  drawPhoto(ph, k, clamp(local / tm.D));
-  // scrims for text legibility
+  drawPhoto(ph, clamp(local / tm.D));
   let g = ctx.createLinearGradient(0, H * 0.45, 0, H);
   g.addColorStop(0, 'rgba(20,18,16,0)'); g.addColorStop(1, 'rgba(20,18,16,0.62)');
   ctx.fillStyle = g; ctx.fillRect(0, H * 0.45, W, H * 0.55);
@@ -330,49 +709,8 @@ function seg(k, local, tm){
   else if (ph.cap) drawCaption(ph.cap, local);
 }
 
-function moveFor(ph, k){
-  if (ph.move !== 'auto') return ph.move;
-  const wide = ph.c.width / ph.c.height > (W / H) * 1.3;
-  if (ph.fit === 'contain') return k % 2 ? 'out' : 'in';
-  if (wide) return k % 2 ? 'left' : 'right';
-  return k % 2 ? 'out' : 'in';
-}
-function coverDraw(img, z, ox, oy){
-  const iw = img.width, ih = img.height, sc = Math.max(W / iw, H / ih) * z;
-  const dw = iw * sc, dh = ih * sc;
-  ctx.drawImage(img, -(dw - W) * ox, -(dh - H) * oy, dw, dh);
-}
-function drawPhoto(ph, k, u){
-  const mv = moveFor(ph, k), img = ph.c;
-  if (ph.fit === 'contain'){
-    coverDraw(ph.b, 1.1, 0.5, 0.5);
-    ctx.fillStyle = 'rgba(20,18,16,0.28)'; ctx.fillRect(0, 0, W, H);
-    let z = mv === 'out' ? 1.06 - 0.06 * u : 1 + 0.06 * u;
-    const sc = Math.min(W / img.width, H / img.height) * z, dw = img.width * sc, dh = img.height * sc;
-    let dx = (W - dw) / 2, dy = (H - dh) / 2;
-    if (mv === 'right') dx += (eio(u) - 0.5) * -40; if (mv === 'left') dx += (eio(u) - 0.5) * 40;
-    ctx.save(); ctx.shadowColor = 'rgba(0,0,0,0.45)'; ctx.shadowBlur = 40; ctx.shadowOffsetY = 12;
-    ctx.drawImage(img, dx, dy, dw, dh); ctx.restore();
-    return;
-  }
-  const base = Math.max(W / img.width, H / img.height);
-  const overX = img.width * base - W, overY = img.height * base - H;
-  let z = 1, ox = 0.5, oy = 0.5;
-  if (mv === 'in') z = 1 + 0.14 * u;
-  else if (mv === 'out') z = 1.14 - 0.14 * u;
-  else if (mv === 'right' || mv === 'left'){ z = overX < W * 0.15 ? 1.18 : 1.05; ox = mv === 'right' ? eio(u) : 1 - eio(u); }
-  else if (mv === 'up' || mv === 'down'){ z = overY < H * 0.15 ? 1.18 : 1.05; oy = mv === 'down' ? eio(u) : 1 - eio(u); }
-  coverDraw(img, z, ox, oy);
-}
-
-// ---------- layout per format ----------
-function L(){
-  const reel = state.fmt === 'reel';
-  return reel
-    ? { reel, plateY: 120, hookBottom: 1170, barY: 1240, barH: 214 }
-    : { reel, plateY: 40, hookBottom: 900, barY: 1092, barH: 214 };
-}
-
+// ---------- overlays ----------
+function L(){ return state.fmt === 'reel' ? { plateY: 120, hookBottom: 1170, barY: 1240, barH: 214 } : { plateY: 40, hookBottom: 900, barY: 1092, barH: 214 }; }
 function drawLogoPlate(){
   if (!logoImg) return;
   const lw = 200, lh = lw / (717 / 328), pw = lw + 44, ph = lh + 28, x = (W - pw) / 2, y = L().plateY;
@@ -380,7 +718,6 @@ function drawLogoPlate(){
   ctx.fillStyle = CARD; rr(x, y, pw, ph, 24); ctx.fill(); ctx.restore();
   ctx.drawImage(logoImg, x + 22, y + 14, lw, lh);
 }
-
 function badge(text, x, y, size, align){
   F(800, size); spaced(size * 0.17);
   const tw = ctx.measureText(text).width + size * 2.1, th = size * 2.1;
@@ -393,27 +730,21 @@ function badge(text, x, y, size, align){
   ctx.textBaseline = 'top'; spaced(0);
   return th;
 }
-
 function drawHook(local, tm){
   const lay = L(), x = 64, maxW = W - 128;
-  const out = 1 - clamp((local - (tm.D - T - 0.3)) / 0.4); // fade before the transition
+  const out = 1 - clamp((local - (tm.D - T - 0.3)) / 0.4);
   const base = ctx.globalAlpha;
   const A = (d) => { const a = eout((local - d) / 0.55); ctx.globalAlpha = base * a * out; return (1 - a) * 40; };
   ctx.textBaseline = 'top'; ctx.textAlign = 'left';
   F(800, 112); spaced(1);
-  const hook = TR(state.hook || 'YENİ İLAN');
-  const lines = wrap(hook, maxW, 2);
-  const locTxt = TR(state.loc);
-  const hHook = lines.length * 118, hLoc = locTxt ? 64 : 0, hBadge = 66 + 26;
+  const lines = wrap(TR(state.hook || 'YENİ İLAN'), maxW, 2), locTxt = TR(state.loc);
+  const hHook = lines.length * 118, hLoc = locTxt ? 64 : 0, hBadge = 92;
   let y = lay.hookBottom - (hBadge + hHook + hLoc);
-  // badge
   let dy = A(0.15); badge(state.type, x, y + dy, 30); y += hBadge;
-  // headline
   dy = A(0.3); F(800, 112); spaced(1); ctx.fillStyle = WHITE;
   ctx.save(); ctx.shadowColor = 'rgba(0,0,0,0.45)'; ctx.shadowBlur = 24; ctx.shadowOffsetY = 4;
   for (const l of lines){ ctx.fillText(l, x, y + dy); y += 118; }
   ctx.restore(); spaced(0);
-  // gold rule
   dy = A(0.45); ctx.fillStyle = GOLD; ctx.fillRect(x, y + 4 + dy, 140 * eout((local - 0.45) / 0.6), 8);
   y += 22;
   if (locTxt){
@@ -426,20 +757,17 @@ function drawHook(local, tm){
   }
   ctx.globalAlpha = base;
 }
-
 function drawCaption(cap, local){
-  const lay = L(), x = 64, base = ctx.globalAlpha;
-  const a = eout((local - 0.35) / 0.5);
+  const lay = L(), x = 64, base = ctx.globalAlpha, a = eout((local - 0.4) / 0.5);
   ctx.globalAlpha = base * a;
   F(800, 44); spaced(5); ctx.textBaseline = 'top'; ctx.textAlign = 'left';
   const txt = fit(TR(cap), W - 160), y = lay.barY - 110 + (1 - a) * 24;
   ctx.save(); ctx.shadowColor = 'rgba(0,0,0,0.55)'; ctx.shadowBlur = 18; ctx.fillStyle = WHITE; ctx.fillText(txt, x, y); ctx.restore();
   const tw = ctx.measureText(txt).width; spaced(0);
-  ctx.fillStyle = GOLD; ctx.fillRect(x, y + 58, Math.min(tw, 180) * eout((local - 0.5) / 0.6), 6);
+  ctx.fillStyle = GOLD; ctx.fillRect(x, y + 58, Math.min(tw, 180) * eout((local - 0.55) / 0.6), 6);
   ctx.globalAlpha = base;
 }
-
-function drawInfoBar(a, t){
+function drawInfoBar(a){
   const lay = L(), x = 40, w = W - 80, h = lay.barH, y = lay.barY + (1 - a) * 60, base = ctx.globalAlpha;
   ctx.globalAlpha = base * a;
   ctx.save(); ctx.shadowColor = 'rgba(0,0,0,0.35)'; ctx.shadowBlur = 30; ctx.shadowOffsetY = 8;
@@ -447,14 +775,12 @@ function drawInfoBar(a, t){
   ctx.strokeStyle = 'rgba(176,141,87,0.7)'; ctx.lineWidth = 2; rr(x + 1, y + 1, w - 2, h - 2, 27); ctx.stroke();
   const pad = 36, sp = specs(), pv = priceValue();
   ctx.textBaseline = 'top'; ctx.textAlign = 'left';
-  // chips on the right
   F(800, 30); let cx = x + w - pad; const chipH = 58, chipY = y + 34;
-  const chipsW = [];
   for (let i = sp.length - 1; i >= 0; i--){
     const tw = ctx.measureText(sp[i]).width + 40; cx -= tw;
     ctx.fillStyle = CHAMP; rr(cx, chipY, tw, chipH, chipH / 2); ctx.fill();
     ctx.fillStyle = CHAR; ctx.textBaseline = 'middle'; ctx.fillText(sp[i], cx + 20, chipY + chipH / 2 + 2); ctx.textBaseline = 'top';
-    chipsW.push(tw); cx -= 12;
+    cx -= 12;
   }
   const leftMax = cx - (x + pad) - 10;
   if (pv){
@@ -471,22 +797,19 @@ function drawInfoBar(a, t){
   ctx.fillText(fit(meta, w - pad * 2), x + pad, y + 158);
   ctx.globalAlpha = base;
 }
-
 function drawOutro(local){
-  const reel = state.fmt === 'reel', S = reel ? 1 : 0.8, base = ctx.globalAlpha;
+  const reel = state.fmt === 'reel', S = reel ? 1.08 : 0.84, base = ctx.globalAlpha;
   ctx.fillStyle = CARD; ctx.fillRect(0, 0, W, H);
-  // thin bronze frame
   ctx.strokeStyle = BRONZE; ctx.lineWidth = 3; ctx.strokeRect(36, 36, W - 72, H - 72);
   const cxm = W / 2, maxW = W - 180;
   ctx.textAlign = 'center'; ctx.textBaseline = 'top';
-  // measure blocks
-  F(800, 46 * S); const tl = state.title ? wrap(TR(state.title), maxW, reel ? 3 : 2) : [];
+  F(800, 48 * S); const tl = state.title ? wrap(TR(state.title), maxW, reel ? 3 : 2) : [];
   const pv = priceValue(), sp = specs(); if (state.loc) sp.push(state.loc.trim());
-  const lw = 460 * S, lh = lw / (717 / 328);
+  const lw = 480 * S, lh = lw / (717 / 328);
   const blocks = [
-    ['logo', lh + 40 * S], ['badge', 64 * S + 34 * S], ['title', tl.length ? tl.length * 58 * S + 18 * S : 0],
-    ['price', pv ? 34 * S + 100 * S : 0], ['specs', sp.length ? 50 * S : 0], ['rule', 60 * S],
-    ['contact', CONTACT.length * 70 * S], ['legal', 70 * S]
+    ['logo', lh + 44 * S], ['badge', 98 * S], ['title', tl.length ? tl.length * 60 * S + 22 * S : 0],
+    ['price', pv ? 140 * S : 0], ['specs', sp.length ? 52 * S : 0], ['rule', 62 * S],
+    ['contact', CONTACT.length * 72 * S], ['legal', 76 * S]
   ].filter(b => b[1] > 0);
   const total = blocks.reduce((s, b) => s + b[1], 0);
   let y = Math.max(70, (H - total) / 2), i = 0;
@@ -495,7 +818,7 @@ function drawOutro(local){
     const dy = A();
     if (name === 'logo' && logoImg) ctx.drawImage(logoImg, cxm - lw / 2, y + dy, lw, lh);
     if (name === 'badge'){ badge(state.type, cxm, y + dy, 28 * S, 'center'); ctx.textAlign = 'center'; }
-    if (name === 'title'){ F(800, 46 * S); ctx.fillStyle = INK; let yy = y + dy; for (const l of tl){ ctx.fillText(l, cxm, yy); yy += 58 * S; } }
+    if (name === 'title'){ F(800, 48 * S); ctx.fillStyle = INK; let yy = y + dy; for (const l of tl){ ctx.fillText(l, cxm, yy); yy += 60 * S; } }
     if (name === 'price'){
       F(700, 20 * S); spaced(4); ctx.fillStyle = SOFT; ctx.fillText(priceLabel(), cxm, y + dy); spaced(0);
       F(800, 92 * S); ctx.fillStyle = PRICE; ctx.fillText(fit(pv, maxW), cxm, y + dy + 32 * S);
@@ -509,7 +832,7 @@ function drawOutro(local){
       for (const [ic, txt] of CONTACT){
         icon(ic, x0 + d / 2, yy + d / 2, d, CHAR, CHAMP);
         ctx.fillStyle = INK; ctx.textBaseline = 'middle'; ctx.fillText(txt, x0 + d + 22, yy + d / 2 + 2); ctx.textBaseline = 'top';
-        yy += 70 * S;
+        yy += 72 * S;
       }
       ctx.textAlign = 'center';
     }
@@ -522,7 +845,6 @@ function drawOutro(local){
   }
   ctx.globalAlpha = base; ctx.textAlign = 'left';
 }
-
 function drawEmpty(){
   ctx.fillStyle = CARD; ctx.fillRect(0, 0, W, H);
   ctx.strokeStyle = BRONZE; ctx.lineWidth = 3; ctx.strokeRect(36, 36, W - 72, H - 72);
@@ -534,60 +856,112 @@ function drawEmpty(){
 }
 
 // ---------- photos ----------
-async function addFiles(files){
-  const list = [...files].filter(f => f.type.startsWith('image/'));
-  if (!list.length) return;
+let analyzing = false;
+async function addSources(items){
   const room = 15 - state.photos.length;
   if (room <= 0){ setStatus('En fazla 15 fotoğraf eklenebilir.'); return; }
-  if (list.length > room) setStatus('İlk ' + room + ' fotoğraf eklendi. En fazla 15 fotoğraf eklenebilir.');
-  else setStatus('Fotoğraflar hazırlanıyor…');
-  for (const f of list.slice(0, room)){
+  if (items.length > room) setStatus('İlk ' + room + ' fotoğraf eklendi. En fazla 15 fotoğraf eklenebilir.');
+  for (const it of items.slice(0, room)){
     try {
-      let src;
-      try { src = await createImageBitmap(f, { imageOrientation: 'from-image' }); }
-      catch (e) { src = await loadImg(URL.createObjectURL(f)); }
-      const w = src.width, h = src.height;
-      const sc = Math.min(1, Math.max(1080 / w, 1920 / h) * 1.08);
+      const src = await it.get(), w = src.width, h = src.height;
+      const sc = Math.min(1, Math.max(1080 / w, 1920 / h) * 1.12, 4096 / Math.max(w, h));
       const c = document.createElement('canvas'); c.width = Math.round(w * sc); c.height = Math.round(h * sc);
       const g = c.getContext('2d'); g.imageSmoothingQuality = 'high'; g.drawImage(src, 0, 0, c.width, c.height);
       const bs = 48 / Math.max(w, h), b = document.createElement('canvas');
-      b.width = Math.max(2, Math.round(w * bs)); b.height = Math.max(2, Math.round(h * bs));
-      b.getContext('2d').drawImage(src, 0, 0, b.width, b.height);
+      b.width = Math.max(2, Math.round(w * bs)); b.height = Math.max(2, Math.round(h * bs)); b.getContext('2d').drawImage(c, 0, 0, b.width, b.height);
       if (src.close) src.close();
-      const th = document.createElement('canvas'), ts = 160 / Math.min(w, h);
+      const th = document.createElement('canvas'), ts = 180 / Math.min(w, h);
       th.width = Math.round(w * ts); th.height = Math.round(h * ts); th.getContext('2d').drawImage(c, 0, 0, th.width, th.height);
-      state.photos.push({ c, b, thumb: th.toDataURL('image/jpeg', 0.7), cap: '', move: 'auto', fit: 'cover' });
-    } catch (e) { setStatus('Bir fotoğraf açılamadı: ' + f.name); }
+      const ph = { c, b, thumb: th.toDataURL('image/jpeg', 0.75), cap: '', move: 'auto', fit: 'cover', userF: null, an: null, plan: 'dollyIn', F: null, dep: null, depC: null, depV: 0 };
+      ph.an = analyze(c); ph.dep = heuristicDepth(c); ph.depC = depthCanvas(ph.dep); ph.depV = 1;
+      state.photos.push(ph);
+    } catch (e) { setStatus('Bir fotoğraf açılamadı: ' + (it.name || '')); }
   }
-  if (!statusLocked) setStatus(state.photos.length + ' fotoğraf hazır. Önizle\'ye basıp kontrol edin.');
-  renderList(); idleDraw();
+  choreograph(); renderList(); idleDraw();
+  runDepth();
+}
+async function runDepth(){
+  if (analyzing || !state.ai) { updateMeta(); return; }
+  const todo = () => state.photos.filter(p => !p.dep.ai);
+  if (!todo().length){ updateMeta(); return; }
+  analyzing = true; updateMeta();
+  setStatus('Fotoğraflar 3D için hazırlanıyor…');
+  const ok = await loadDepth();
+  if (ok){
+    let i = 0;
+    for (const p of todo()){
+      i++; setStatus('3D derinlik çıkarılıyor: ' + i + ' / ' + (i + todo().length - 1));
+      try { p.dep = await aiDepth(p); p.depC = depthCanvas(p.dep); p.depV++; } catch (e) { console.warn('depth', e); }
+      if (!state.photos.includes(p)) continue;
+      choreograph(); idleDraw();
+    }
+    setStatus(state.photos.length + ' fotoğraf hazır. Önizle\'ye basıp kontrol edin.');
+  } else setStatus(state.photos.length + ' fotoğraf hazır (basit derinlikle). Önizle\'ye basıp kontrol edin.');
+  analyzing = false; renderList(); updateMeta();
+  if (todo().length && depthState === 'ready') runDepth();
+}
+function fileItems(files){
+  return [...files].filter(f => f.type.startsWith('image/') || /\.(jpe?g|png|webp|heic|heif)$/i.test(f.name)).map(f => ({
+    name: f.name,
+    get: async () => { try { return await createImageBitmap(f, { imageOrientation: 'from-image' }); } catch (e) { return await loadImg(URL.createObjectURL(f)); } }
+  }));
 }
 function loadImg(src){ return new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = src; }); }
 
-function opt(list, cur){ return list.map(([v, t]) => '<option value="' + v + '"' + (v === cur ? ' selected' : '') + '>' + t + '</option>').join(''); }
-function esc(s){ return s.replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function esc(s){ return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function moveOptions(p){
+  return '<option value="auto"' + (p.move === 'auto' ? ' selected' : '') + '>Akıllı · ' + MOVE_NAMES[p.plan] + '</option>' +
+    Object.keys(MOVE_NAMES).map(k => '<option value="' + k + '"' + (p.move === k ? ' selected' : '') + '>' + MOVE_NAMES[k] + '</option>').join('');
+}
 function renderList(){
   const ul = $('plist'); $('pEmpty').hidden = state.photos.length > 0;
-  ul.innerHTML = state.photos.map((p, i) =>
-    '<li class="prow"><div class="pthumb"><img alt="" src="' + p.thumb + '"><b>' + (i + 1) + '</b></div>' +
-    '<div class="pmid"><input type="text" id="cap' + i + '" data-i="' + i + '" data-k="cap" aria-label="Fotoğraf ' + (i + 1) + ' oda adı" placeholder="' + (i === 0 ? 'Açılış fotoğrafı' : 'Oda adı, örn. Salon') + '" value="' + esc(p.cap) + '"' + (i === 0 ? ' disabled' : '') + '>' +
-    '<div class="two"><select id="mv' + i + '" data-i="' + i + '" data-k="move" aria-label="Kamera hareketi">' + opt(MOVES, p.move) + '</select>' +
-    '<select id="ft' + i + '" data-i="' + i + '" data-k="fit" aria-label="Yerleşim">' + opt(FITS, p.fit) + '</select></div></div>' +
-    '<div class="pacts"><button class="ico" type="button" data-a="up" data-i="' + i + '" aria-label="Yukarı taşı"' + (i ? '' : ' disabled') + '>↑</button>' +
-    '<button class="ico" type="button" data-a="down" data-i="' + i + '" aria-label="Aşağı taşı"' + (i < state.photos.length - 1 ? '' : ' disabled') + '>↓</button>' +
-    '<button class="ico del" type="button" data-a="del" data-i="' + i + '" aria-label="Sil">×</button></div></li>').join('');
+  ul.innerHTML = state.photos.map((p, i) => {
+    const f = p.F || { x: 0.5, y: 0.5 };
+    return '<li class="prow"><button class="pthumb" type="button" data-a="foc" data-i="' + i + '" aria-label="Fotoğraf ' + (i + 1) + ' odak noktasını seç"><img alt="" src="' + p.thumb + '"><b>' + (i + 1) + '</b>' +
+      '<i style="left:' + (f.x * 100).toFixed(1) + '%;top:' + (f.y * 100).toFixed(1) + '%"></i><span>Odak</span></button>' +
+      '<div class="pmid"><input type="text" id="cap' + i + '" data-i="' + i + '" data-k="cap" aria-label="Fotoğraf ' + (i + 1) + ' oda adı" placeholder="' + (i === 0 ? 'Açılış fotoğrafı' : 'Oda adı, örn. Salon') + '" value="' + esc(p.cap) + '"' + (i === 0 ? ' disabled' : '') + '>' +
+      '<div class="two"><select id="mv' + i + '" data-i="' + i + '" data-k="move" aria-label="Kamera hareketi">' + moveOptions(p) + '</select>' +
+      '<select id="ft' + i + '" data-i="' + i + '" data-k="fit" aria-label="Yerleşim">' + FITS.map(([v, t]) => '<option value="' + v + '"' + (v === p.fit ? ' selected' : '') + '>' + t + '</option>').join('') + '</select></div></div>' +
+      '<div class="pacts"><button class="ico" type="button" data-a="up" data-i="' + i + '" aria-label="Yukarı taşı"' + (i ? '' : ' disabled') + '>↑</button>' +
+      '<button class="ico" type="button" data-a="down" data-i="' + i + '" aria-label="Aşağı taşı"' + (i < state.photos.length - 1 ? '' : ' disabled') + '>↓</button>' +
+      '<button class="ico del" type="button" data-a="del" data-i="' + i + '" aria-label="Sil">×</button></div></li>';
+  }).join('');
   updateMeta();
 }
-$('plist').addEventListener('input', (e) => { const el = e.target; if (el.dataset.k){ state.photos[+el.dataset.i][el.dataset.k] = el.value; idleDraw(); } });
+$('plist').addEventListener('input', (e) => {
+  const el = e.target; if (!el.dataset.k) return;
+  state.photos[+el.dataset.i][el.dataset.k] = el.value;
+  if (el.dataset.k !== 'cap'){ choreograph(); renderList(); }
+  idleDraw(state.photos[+el.dataset.i]);
+});
 $('plist').addEventListener('click', (e) => {
   const b = e.target.closest('button[data-a]'); if (!b || busy) return;
   const i = +b.dataset.i, a = b.dataset.a, P = state.photos;
-  if (a === 'del') P.splice(i, 1);
+  if (a === 'foc'){ openFocus(i); return; }
+  if (a === 'del'){ dropTex(P[i]); P.splice(i, 1); }
   if (a === 'up' && i > 0) [P[i - 1], P[i]] = [P[i], P[i - 1]];
   if (a === 'down' && i < P.length - 1) [P[i + 1], P[i]] = [P[i], P[i + 1]];
-  renderList(); idleDraw();
+  choreograph(); renderList(); idleDraw();
 });
-$('fileIn').addEventListener('change', (e) => { addFiles(e.target.files); e.target.value = ''; });
+$('fileIn').addEventListener('change', (e) => { addSources(fileItems(e.target.files)); e.target.value = ''; });
+
+// ---------- focus picker ----------
+let focIdx = -1;
+function openFocus(i){
+  const p = state.photos[i]; focIdx = i;
+  if (!p.mid){ const s = 900 / Math.max(p.c.width, p.c.height), m = document.createElement('canvas'); m.width = Math.round(p.c.width * s); m.height = Math.round(p.c.height * s); m.getContext('2d').drawImage(p.c, 0, 0, m.width, m.height); p.mid = m.toDataURL('image/jpeg', 0.85); }
+  $('focImg').src = p.mid; $('focMove').innerHTML = moveOptions(p); placeDot();
+  $('focSheet').hidden = false;
+}
+function placeDot(){ const p = state.photos[focIdx], f = p.F || { x: 0.5, y: 0.5 }; $('focDot').style.left = (f.x * 100) + '%'; $('focDot').style.top = (f.y * 100) + '%'; }
+$('focWrap').addEventListener('click', (e) => {
+  const r = $('focImg').getBoundingClientRect(), p = state.photos[focIdx];
+  p.userF = { x: clamp((e.clientX - r.left) / r.width, 0.02, 0.98), y: clamp((e.clientY - r.top) / r.height, 0.02, 0.98) };
+  choreograph(); $('focMove').innerHTML = moveOptions(p); placeDot(); renderList(); idleDraw(p);
+});
+$('focMove').addEventListener('change', (e) => { const p = state.photos[focIdx]; p.move = e.target.value; choreograph(); $('focMove').innerHTML = moveOptions(p); placeDot(); renderList(); idleDraw(p); });
+$('focAuto').addEventListener('click', () => { const p = state.photos[focIdx]; p.userF = null; choreograph(); $('focMove').innerHTML = moveOptions(p); placeDot(); renderList(); idleDraw(p); });
+$('focOk').addEventListener('click', () => { $('focSheet').hidden = true; });
 
 // ---------- form ----------
 function bindSeg(id, key, num){
@@ -600,41 +974,47 @@ bindSeg('typeSeg', 'type'); bindSeg('fmtSeg', 'fmt'); bindSeg('durSeg', 'dur', t
 for (const k of ['title', 'loc', 'price', 'rooms', 'area', 'yetki', 'eids', 'hook']){
   const el = $(k); el.value = state[k] || '';
   el.addEventListener('input', () => {
-    if (k === 'price' && state.type !== 'KAT KARŞILIĞI'){
-      const d = el.value.replace(/\D/g, ''); el.value = d ? Number(d).toLocaleString('tr-TR') : '';
-    }
+    if (k === 'price' && state.type !== 'KAT KARŞILIĞI'){ const d = el.value.replace(/\D/g, ''); el.value = d ? Number(d).toLocaleString('tr-TR') : ''; }
     state[k] = el.value; onChange(k);
   });
 }
+$('aiIn').checked = !!state.ai;
+$('aiIn').addEventListener('change', () => { state.ai = $('aiIn').checked; persist(); aiLine(); if (state.ai) runDepth(); });
 $('hookChips').addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; $('hook').value = state.hook = b.textContent; onChange('hook'); });
 function onChange(key){
   persist();
   if (key === 'type'){ $('priceTxt').textContent = state.type === 'KAT KARŞILIĞI' ? 'Arsa sahibine oran' : state.type === 'KİRALIK' ? 'Aylık kira (₺)' : 'Fiyat (₺)';
     $('price').inputMode = state.type === 'KAT KARŞILIĞI' ? 'text' : 'numeric'; $('price').placeholder = state.type === 'KAT KARŞILIĞI' ? '%50' : state.type === 'KİRALIK' ? '22.000' : '4.250.000'; }
-  if (key === 'fmt') setSize();
+  if (key === 'fmt'){ setSize(); choreograph(); renderList(); }
   if (key === 'music') $('customBox').hidden = state.music !== 'custom';
   updateMeta(); idleDraw();
 }
 $('musicIn').addEventListener('change', async (e) => {
   const f = e.target.files[0]; if (!f) return;
-  try { const ac = getAC(); customBuf = await ac.decodeAudioData(await f.arrayBuffer()); customName = f.name;
-    $('musicLbl').textContent = '♪ ' + f.name; setStatus('Müzik eklendi.'); }
+  try { customBuf = await getAC().decodeAudioData(await f.arrayBuffer()); $('musicLbl').textContent = '♪ ' + f.name; setStatus('Müzik eklendi.'); }
   catch (err) { customBuf = null; setStatus('Bu ses dosyası açılamadı. MP3 veya M4A deneyin.'); }
 });
 function setSize(){
   W = 1080; H = state.fmt === 'reel' ? 1920 : 1350; cv.width = W; cv.height = H;
+  for (const b of [bufA, bufB]){ b.width = W; b.height = H; }
   cv.classList.toggle('post', state.fmt === 'post');
 }
 function fmtTime(s){ s = Math.max(0, Math.round(s)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); }
 function updateMeta(){
   const tm = timing(); $('tInfo').textContent = tm.n + ' fotoğraf';
-  $('tClock').textContent = '0:00 / ' + fmtTime(tm.total);
-  $('makeBtn').disabled = $('playBtn').disabled = !tm.n && !busy;
+  if (!busy) $('tClock').textContent = '0:00 / ' + fmtTime(tm.total);
+  if (!busy){ $('playBtn').disabled = !tm.n; $('makeBtn').disabled = !tm.n || analyzing; $('makeBtn').textContent = analyzing ? 'Hazırlanıyor…' : 'Videoyu oluştur'; }
 }
-let statusLocked = false;
 function setStatus(t){ $('status').textContent = t; }
 let idleT = null;
-function idleDraw(){ if (busy) return; clearTimeout(idleT); idleT = setTimeout(() => frame(timing().n ? 1.3 : 0), 30); }
+function idleDraw(ph){
+  if (busy) return; clearTimeout(idleT);
+  idleT = setTimeout(() => {
+    const tm = timing(); if (!tm.n){ frame(0); return; }
+    const i = ph ? state.photos.indexOf(ph) : -1;
+    frame(i > 0 ? i * tm.step + tm.D * 0.55 : 1.3);
+  }, 30);
+}
 
 // ---------- music (generated in the browser, no copyright) ----------
 let AC = null;
@@ -655,11 +1035,10 @@ function buildMusic(ac, out, t0, total, style){
   const verb = ac.createConvolver(); verb.buffer = impulse(ac, 2.6);
   const wet = ac.createGain(); wet.gain.value = style === 'calm' ? 0.45 : 0.25; verb.connect(wet); wet.connect(master);
   const lp = ac.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = style === 'calm' ? 1300 : 2200; lp.Q.value = 0.5;
-  const padBus = ac.createGain(); padBus.gain.value = 1; padBus.connect(lp); lp.connect(master); lp.connect(verb);
+  const padBus = ac.createGain(); padBus.connect(lp); lp.connect(master); lp.connect(verb);
   const dry = ac.createGain(); dry.connect(master); dry.connect(verb);
   const nb = noiseBuf(ac);
   const bpm = style === 'calm' ? 76 : 100, beat = 60 / bpm, bar = beat * 4;
-  // Am9 – Fmaj7 – C/E – G6 : warm, "home tour" feeling
   const prog = [[57, 60, 64, 67, 71], [53, 57, 60, 64, 69], [52, 55, 60, 64, 67], [55, 59, 62, 64, 67]];
   const roots = [45, 41, 40, 43];
   const tone = (type, f, t, dur, peak, att, dest, detune) => {
@@ -689,19 +1068,15 @@ function buildMusic(ac, out, t0, total, style){
     }
     if (style === 'calm'){
       tone('sine', mtof(root), tb, bar, 0.16, 0.08, dry);
-      // gentle bell arpeggio
-      const arp = [ch[4] + 12, ch[2] + 12, ch[3] + 12, ch[1] + 12];
-      arp.forEach((m, i) => tone('sine', mtof(m), tb + i * beat, beat * 2.2, 0.05, 0.01, dry));
+      [ch[4] + 12, ch[2] + 12, ch[3] + 12, ch[1] + 12].forEach((m, i) => tone('sine', mtof(m), tb + i * beat, beat * 2.2, 0.05, 0.01, dry));
     } else {
       for (let q = 0; q < 4; q++){
         const tq = tb + q * beat;
-        kick(tq);
-        tone('sine', mtof(root), tq, beat * 0.9, 0.17, 0.02, dry);
+        kick(tq); tone('sine', mtof(root), tq, beat * 0.9, 0.17, 0.02, dry);
         noise(tq + beat / 2, 0.05, 0.05, 'highpass', 7500, dry);
         if (q % 2) noise(tq, 0.16, 0.13, 'bandpass', 1600, dry);
       }
-      const arp = [ch[0] + 12, ch[2] + 12, ch[4] + 12, ch[3] + 12, ch[1] + 12, ch[2] + 12, ch[4] + 12, ch[3] + 12];
-      arp.forEach((m, i) => tone('triangle', mtof(m), tb + i * beat / 2, beat * 0.7, 0.05, 0.005, dry));
+      [ch[0], ch[2], ch[4], ch[3], ch[1], ch[2], ch[4], ch[3]].forEach((m, i) => tone('triangle', mtof(m + 12), tb + i * beat / 2, beat * 0.7, 0.05, 0.005, dry));
     }
   }
   return () => { for (const n of nodes){ try { n.stop(); } catch (e) {} } try { master.disconnect(); } catch (e) {} };
@@ -728,7 +1103,9 @@ async function run(record){
   const out = ac.createGain(); out.connect(ac.destination);
   let recDest = null;
   if (record){ recDest = ac.createMediaStreamDestination(); out.connect(recDest); }
-  const t0 = ac.currentTime + 0.3;
+  // warm up textures for the first two photos so the first frames don't stutter
+  try { frame(0); if (tm.n > 1) frame(tm.step + 0.01); } catch (e) {}
+  const t0 = ac.currentTime + 0.35;
   let stopMusic = () => {};
   if (state.music === 'calm' || state.music === 'modern') stopMusic = buildMusic(ac, out, t0, tm.total, state.music);
   else if (state.music === 'custom' && customBuf){
@@ -742,7 +1119,7 @@ async function run(record){
     try { lock = await navigator.wakeLock?.request('screen'); } catch (e) {}
     const stream = cv.captureStream(30);
     if (state.music !== 'none') recDest.stream.getAudioTracks().forEach(tr => stream.addTrack(tr));
-    try { rec = new MediaRecorder(stream, Object.assign({ videoBitsPerSecond: 9000000, audioBitsPerSecond: 160000 }, mime ? { mimeType: mime } : {})); }
+    try { rec = new MediaRecorder(stream, Object.assign({ videoBitsPerSecond: 10000000, audioBitsPerSecond: 160000 }, mime ? { mimeType: mime } : {})); }
     catch (e) { rec = new MediaRecorder(stream); }
     rec.ondataavailable = (ev) => { if (ev.data && ev.data.size) chunks.push(ev.data); };
     frame(0); rec.start(500);
@@ -761,7 +1138,7 @@ async function run(record){
         showResult(new Blob(chunks, { type }), type);
       };
       setTimeout(() => { try { rec.stop(); } catch (e) {} }, ok ? 250 : 0);
-    } else { busy = false; setButtons(false); if (ok) setStatus('Önizleme bitti. Beğendiyseniz "Videoyu oluştur"a basın.'); else setStatus(''); idleDraw(); }
+    } else { busy = false; setButtons(false); setStatus(ok ? 'Önizleme bitti. Beğendiyseniz "Videoyu oluştur"a basın.' : ''); idleDraw(); }
     $('bar').style.width = '0';
   };
   cancelRun = () => finish(false);
@@ -776,10 +1153,10 @@ async function run(record){
   };
   requestAnimationFrame(loop);
 }
-function setButtons(active){
+function setButtons(recording){
   const pb = $('playBtn'), mb = $('makeBtn');
-  if (busy){ pb.textContent = 'Durdur'; pb.disabled = false; mb.disabled = true; mb.textContent = active ? 'Kaydediliyor…' : 'Videoyu oluştur'; }
-  else { pb.textContent = 'Önizle'; mb.textContent = 'Videoyu oluştur'; updateMeta(); }
+  if (busy){ pb.textContent = 'Durdur'; pb.disabled = false; mb.disabled = true; mb.textContent = recording ? 'Kaydediliyor…' : 'Videoyu oluştur'; }
+  else { pb.textContent = 'Önizle'; updateMeta(); }
 }
 $('playBtn').addEventListener('click', () => { if (busy){ cancelRun && cancelRun(); } else run(false); });
 $('makeBtn').addEventListener('click', () => run(true));
@@ -807,13 +1184,35 @@ $('shareBtn').addEventListener('click', async () => {
 });
 $('closeBtn').addEventListener('click', () => { $('outSheet').hidden = true; $('outVid').pause(); });
 
+// ---------- self-test (open the page with #test) ----------
+async function selfTest(){
+  const out = $('selftest'); out.hidden = false;
+  const log = (s) => { out.textContent += s + '\n'; };
+  log('Self-test başladı');
+  log('WebGL: ' + (initGL() ? 'var' : 'YOK'));
+  log('Video kaydı: ' + (pickMime() || 'YOK'));
+  const mk = (seed) => ({ name: 'test' + seed, get: async () => {
+    const c = document.createElement('canvas'); c.width = 1600; c.height = 1200; const g = c.getContext('2d');
+    const sky = g.createLinearGradient(0, 0, 0, 500); sky.addColorStop(0, '#5C9BD6'); sky.addColorStop(1, '#9CC8EA');
+    g.fillStyle = '#D8CBB5'; g.fillRect(0, 0, 1600, 1200); g.fillStyle = sky; g.fillRect(560 + seed * 60, 160, 520, 380);
+    g.fillStyle = '#7A6248'; g.fillRect(0, 820, 1600, 380); g.fillStyle = '#3B4C5A'; g.fillRect(180, 620, 560, 300);
+    return c; } });
+  const t0 = performance.now();
+  await addSources([mk(0), mk(1), mk(2)]);
+  log('Analiz: ' + state.photos.map(p => MOVE_NAMES[p.plan] + (p.an.view ? ' (manzara)' : '')).join(' | '));
+  if (state.ai){ while (analyzing) await new Promise(r => setTimeout(r, 300)); }
+  log('3D model: ' + depthState + (depthState === 'ready' ? ' · derinlik AI: ' + state.photos.every(p => p.dep.ai) : '') + ' · ' + Math.round(performance.now() - t0) + ' ms');
+  const s = performance.now(); for (let i = 0; i < 30; i++) frame(0.1 * i + 2.2); log('30 kare: ' + Math.round(performance.now() - s) + ' ms');
+  log('Bitti');
+}
+
 // ---------- boot ----------
-onChange('type'); $('customBox').hidden = state.music !== 'custom';
+onChange('type'); $('customBox').hidden = state.music !== 'custom'; aiLine();
 setSize(); renderList(); frame(0);
 Promise.all([
   loadImg('logo.png').then(i => { logoImg = i; }).catch(() => {}),
   (document.fonts ? Promise.all(['800 40px Montserrat', '700 40px Montserrat', '600 40px Montserrat'].map(f => document.fonts.load(f))) : Promise.resolve()).catch(() => {})
-]).then(() => idleDraw());
+]).then(() => { idleDraw(); if (location.hash === '#test') selfTest(); });
 </script>
 </body>
 </html>
